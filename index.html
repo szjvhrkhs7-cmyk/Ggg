@@ -365,6 +365,46 @@
             background: #dbeafe;
         }
 
+        .backup-section {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .backup-section .btn {
+            flex: 1;
+            font-size: 13px;
+            padding: 10px 8px;
+        }
+
+        .btn-backup {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .btn-backup:active {
+            background: #dcfce7;
+        }
+
+        .btn-restore {
+            background: #fff7ed;
+            color: #ea580c;
+            border: 1px solid #fed7aa;
+        }
+
+        .btn-restore:active {
+            background: #ffedd5;
+        }
+
+        .backup-info {
+            font-size: 11px;
+            color: #94a3b8;
+            text-align: center;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
         .empty-state {
             text-align: center;
             padding: 48px 20px;
@@ -562,6 +602,13 @@
                 <button class="btn btn-secondary" onclick="exportCSV()">CSV</button>
             </div>
         </div>
+
+        <div class="backup-section">
+            <button class="btn btn-backup" onclick="backupData()">Сохранить копию</button>
+            <button class="btn btn-restore" onclick="document.getElementById('restoreFile').click()">Восстановить</button>
+            <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)">
+        </div>
+        <div class="backup-info" id="backupInfo"></div>
 
         <div class="task-list" id="taskList"></div>
     </div>
@@ -986,11 +1033,92 @@
             return text.replace(/[\\;,]/g, function(c) { return '\\' + c; });
         }
 
+        function backupData() {
+            if (tasks.length === 0) {
+                alert('Нет задач для сохранения');
+                return;
+            }
+            const data = {
+                version: 1,
+                exportDate: new Date().toISOString(),
+                tasks: tasks
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tasks_backup_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            localStorage.setItem('lastBackupDate', new Date().toISOString());
+            updateBackupInfo();
+        }
+
+        function restoreData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    let restored = [];
+                    if (data.tasks && Array.isArray(data.tasks)) {
+                        restored = data.tasks;
+                    } else if (Array.isArray(data)) {
+                        restored = data;
+                    } else {
+                        alert('Неверный формат файла');
+                        return;
+                    }
+                    const count = restored.length;
+                    if (tasks.length > 0) {
+                        if (!confirm('У вас ' + tasks.length + ' задач. Заменить на ' + count + ' из файла?\n\nНажмите OK для замены или Отмена чтобы добавить к существующим.')) {
+                            const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
+                            restored.forEach((t, i) => { t.id = maxId + i + 1; });
+                            tasks = tasks.concat(restored);
+                        } else {
+                            tasks = restored;
+                        }
+                    } else {
+                        tasks = restored;
+                    }
+                    saveTasks();
+                    renderTasks();
+                    alert('Восстановлено задач: ' + count);
+                } catch (err) {
+                    alert('Ошибка чтения файла. Убедитесь, что это файл резервной копии.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function updateBackupInfo() {
+            const lastBackup = localStorage.getItem('lastBackupDate');
+            const info = document.getElementById('backupInfo');
+            if (tasks.length === 0) {
+                info.textContent = '';
+                return;
+            }
+            if (lastBackup) {
+                const d = new Date(lastBackup);
+                const days = Math.floor((new Date() - d) / 86400000);
+                let text = 'Последняя копия: ' + formatDate(d.toISOString().split('T')[0]);
+                if (days >= 3) {
+                    text += ' — рекомендуем сохранить новую копию';
+                }
+                info.textContent = text;
+            } else {
+                info.textContent = 'Резервная копия ещё не создавалась — сохраните копию!';
+            }
+        }
+
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') closeModal();
         });
 
         renderTasks();
+        updateBackupInfo();
     </script>
 </body>
 </html>
