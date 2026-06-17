@@ -241,6 +241,40 @@
             color: #16a34a;
         }
 
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        .priority-high {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .priority-low {
+            background: #f0f9ff;
+            color: #3b82f6;
+        }
+
+        .task-card.priority-high-card {
+            border-top: 3px solid #dc2626;
+        }
+
+        .task-card.priority-medium-card {
+            border-top: 3px solid #ea580c;
+        }
+
         .task-summary {
             font-size: 15px;
             font-weight: 600;
@@ -546,6 +580,15 @@
                     <input type="date" id="responseDate">
                 </div>
                 <div class="form-group">
+                    <label for="priority">Значимость</label>
+                    <select id="priority">
+                        <option value="none">Обычная</option>
+                        <option value="low">Низкая</option>
+                        <option value="medium">Средняя</option>
+                        <option value="high">Высокая</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="status">Статус</label>
                     <select id="status">
                         <option value="new">Новая</option>
@@ -644,7 +687,13 @@
                 return matchesSearch && matchesFilter;
             });
 
+            const priorityWeight = { high: 3, medium: 2, low: 1, none: 0 };
+
             filtered.sort((a, b) => {
+                const pA = priorityWeight[a.priority || 'none'] || 0;
+                const pB = priorityWeight[b.priority || 'none'] || 0;
+                if (pA !== pB) return pB - pA;
+
                 let valA = a[currentSort.field];
                 let valB = b[currentSort.field];
                 if (currentSort.field === 'id') {
@@ -677,8 +726,18 @@
             }
 
             list.innerHTML = filtered.map(task => {
-                const cardClass = task.status === 'completed' ? 'completed' : isOverdue(task) ? 'overdue' : '';
+                const pri = task.priority || 'none';
+                let cardClass = task.status === 'completed' ? 'completed' : isOverdue(task) ? 'overdue' : '';
+                if (pri === 'high' || pri === 'medium') {
+                    cardClass += ' priority-' + pri + '-card';
+                }
                 const dateClass = isOverdue(task) ? 'overdue-date' : '';
+
+                const priorityLabels = { high: 'Высокая', medium: 'Средняя', low: 'Низкая' };
+                let priorityHtml = '';
+                if (pri !== 'none') {
+                    priorityHtml = `<span class="priority-badge priority-${pri}">${priorityLabels[pri]}</span>`;
+                }
 
                 let notesHtml = '';
                 if (task.notes) {
@@ -703,7 +762,7 @@
                 return `
                     <div class="task-card ${cardClass}">
                         <div class="task-card-header">
-                            <span class="task-number">#${task.id}</span>
+                            <span class="task-number">#${task.id}${priorityHtml}</span>
                             <span class="status-badge ${statusClass(task.status)}">${statusLabel(task.status)}</span>
                         </div>
                         <div class="task-summary">${escapeHtml(task.summary)}</div>
@@ -761,6 +820,7 @@
             document.getElementById('summary').value = task.summary;
             document.getElementById('additionalInfo').value = task.additionalInfo || '';
             document.getElementById('responseDate').value = task.responseDate || '';
+            document.getElementById('priority').value = task.priority || 'none';
             document.getElementById('status').value = task.status;
             document.getElementById('notes').value = task.notes || '';
 
@@ -775,6 +835,7 @@
                 summary: document.getElementById('summary').value.trim(),
                 additionalInfo: document.getElementById('additionalInfo').value.trim(),
                 responseDate: document.getElementById('responseDate').value,
+                priority: document.getElementById('priority').value,
                 status: document.getElementById('status').value,
                 notes: document.getElementById('notes').value.trim()
             };
@@ -818,13 +879,15 @@
                 alert('Нет задач для экспорта');
                 return;
             }
-            const headers = ['№', 'Дата поступления', 'Краткая суть', 'Доп. информация', 'Дата ответа', 'Статус', 'Заметки'];
+            const priLabels = { high: 'Высокая', medium: 'Средняя', low: 'Низкая', none: 'Обычная' };
+            const headers = ['№', 'Дата поступления', 'Краткая суть', 'Доп. информация', 'Дата ответа', 'Значимость', 'Статус', 'Заметки'];
             const rows = getFilteredTasks().map(t => [
                 t.id,
                 formatDate(t.dateReceived),
                 '"' + (t.summary || '').replace(/"/g, '""') + '"',
                 '"' + (t.additionalInfo || '').replace(/"/g, '""') + '"',
                 formatDate(t.responseDate),
+                priLabels[t.priority || 'none'],
                 statusLabel(t.status),
                 '"' + (t.notes || '').replace(/"/g, '""') + '"'
             ]);
