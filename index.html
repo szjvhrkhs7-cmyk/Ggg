@@ -345,6 +345,7 @@
         .task-actions {
             display: flex;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
         .task-actions .btn {
@@ -352,6 +353,16 @@
             padding: 9px 12px;
             font-size: 13px;
             text-align: center;
+            min-width: 0;
+        }
+
+        .btn-calendar {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .btn-calendar:active {
+            background: #dbeafe;
         }
 
         .empty-state {
@@ -580,6 +591,16 @@
                     <input type="date" id="responseDate">
                 </div>
                 <div class="form-group">
+                    <label for="reminderDays">Напоминание (за сколько дней до ответа)</label>
+                    <select id="reminderDays">
+                        <option value="0">В день ответа</option>
+                        <option value="1" selected>За 1 день</option>
+                        <option value="2">За 2 дня</option>
+                        <option value="3">За 3 дня</option>
+                        <option value="7">За неделю</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="priority">Значимость</label>
                     <select id="priority">
                         <option value="none">Обычная</option>
@@ -780,7 +801,8 @@
                         ${notesHtml}
                         <div class="task-actions">
                             <button class="btn btn-secondary" onclick="editTask(${task.id})">Изменить</button>
-                            ${task.status !== 'completed' ? `<button class="btn btn-success" onclick="completeTask(${task.id})">Завершить</button>` : ''}
+                            ${task.status !== 'completed' ? `<button class="btn btn-success" onclick="completeTask(${task.id})">Готово</button>` : ''}
+                            ${task.responseDate ? `<button class="btn btn-calendar" onclick="addToCalendar(${task.id})">Календарь</button>` : ''}
                             <button class="btn btn-danger" onclick="deleteTask(${task.id})">Удалить</button>
                         </div>
                     </div>
@@ -820,6 +842,7 @@
             document.getElementById('summary').value = task.summary;
             document.getElementById('additionalInfo').value = task.additionalInfo || '';
             document.getElementById('responseDate').value = task.responseDate || '';
+            document.getElementById('reminderDays').value = task.reminderDays != null ? task.reminderDays : 1;
             document.getElementById('priority').value = task.priority || 'none';
             document.getElementById('status').value = task.status;
             document.getElementById('notes').value = task.notes || '';
@@ -835,6 +858,7 @@
                 summary: document.getElementById('summary').value.trim(),
                 additionalInfo: document.getElementById('additionalInfo').value.trim(),
                 responseDate: document.getElementById('responseDate').value,
+                reminderDays: parseInt(document.getElementById('reminderDays').value) || 0,
                 priority: document.getElementById('priority').value,
                 status: document.getElementById('status').value,
                 notes: document.getElementById('notes').value.trim()
@@ -901,6 +925,65 @@
             a.download = 'tasks_' + new Date().toISOString().split('T')[0] + '.csv';
             a.click();
             URL.revokeObjectURL(url);
+        }
+
+        function addToCalendar(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task || !task.responseDate) return;
+
+            const date = task.responseDate.replace(/-/g, '');
+            const nextDay = new Date(task.responseDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            const endDate = nextDay.toISOString().split('T')[0].replace(/-/g, '');
+
+            const reminderMinutes = (task.reminderDays || 0) * 24 * 60;
+
+            const priorityLabels = { high: 'ВЫСОКАЯ', medium: 'СРЕДНЯЯ', low: 'НИЗКАЯ' };
+            const priText = task.priority && task.priority !== 'none' ? ` [${priorityLabels[task.priority]}]` : '';
+
+            let description = task.summary;
+            if (task.additionalInfo) description += '\\nДоп. информация: ' + task.additionalInfo;
+            if (task.notes) description += '\\nЗаметки: ' + task.notes;
+            description = description.replace(/\n/g, '\\n');
+
+            const uid = 'task-' + task.id + '-' + Date.now() + '@lawyer-tasks';
+
+            let ics = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Lawyer Tasks//RU',
+                'CALSCALE:GREGORIAN',
+                'BEGIN:VEVENT',
+                'UID:' + uid,
+                'DTSTART;VALUE=DATE:' + date,
+                'DTEND;VALUE=DATE:' + endDate,
+                'SUMMARY:' + escapeIcs(task.summary + priText),
+                'DESCRIPTION:' + escapeIcs(description),
+            ];
+
+            if (reminderMinutes >= 0) {
+                ics.push(
+                    'BEGIN:VALARM',
+                    'TRIGGER:-PT' + reminderMinutes + 'M',
+                    'ACTION:DISPLAY',
+                    'DESCRIPTION:Срок ответа по задаче #' + task.id,
+                    'END:VALARM'
+                );
+            }
+
+            ics.push('END:VEVENT', 'END:VCALENDAR');
+
+            const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'task_' + task.id + '.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function escapeIcs(text) {
+            return text.replace(/[\\;,]/g, function(c) { return '\\' + c; });
         }
 
         document.addEventListener('keydown', e => {
