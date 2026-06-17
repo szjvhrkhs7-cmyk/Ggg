@@ -2,271 +2,354 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Учет задач банковского юриста</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a2e;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f6ff;
+            color: #1e293b;
             min-height: 100vh;
+            padding-bottom: 80px;
         }
 
         .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
             color: white;
-            padding: 24px 32px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
         }
 
         .header h1 {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
         }
 
         .header p {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-top: 4px;
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 2px;
+            font-weight: 400;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 12px;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .stat-card {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e8f0fe;
         }
 
         .stat-card .label {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 4px;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .stat-card .value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1a1a2e;
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e40af;
+            margin-top: 2px;
         }
 
         .stat-card.overdue .value {
-            color: #e74c3c;
+            color: #ef4444;
         }
 
         .controls {
             display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 8px;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.2s;
+            touch-action: manipulation;
         }
 
         .btn-primary {
-            background: #0f3460;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
         }
 
-        .btn-primary:hover {
-            background: #1a4a7a;
+        .btn-primary:active {
+            transform: scale(0.97);
         }
 
         .btn-secondary {
-            background: #e8ecf1;
-            color: #1a1a2e;
+            background: #e8f0fe;
+            color: #1e40af;
         }
 
-        .btn-secondary:hover {
-            background: #d5dbe3;
+        .btn-secondary:active {
+            background: #d4e4fd;
         }
 
         .btn-danger {
-            background: #fee;
-            color: #e74c3c;
+            background: #fef2f2;
+            color: #ef4444;
         }
 
-        .btn-danger:hover {
-            background: #fdd;
+        .btn-danger:active {
+            background: #fee2e2;
         }
 
         .btn-success {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: #f0fdf4;
+            color: #16a34a;
         }
 
-        .btn-success:hover {
-            background: #c8e6c9;
+        .btn-success:active {
+            background: #dcfce7;
         }
 
         .search-box {
             flex: 1;
-            min-width: 200px;
-            padding: 10px 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
             outline: none;
             transition: border-color 0.2s;
+            background: white;
         }
 
         .search-box:focus {
-            border-color: #0f3460;
+            border-color: #3b82f6;
         }
 
         .filter-select {
-            padding: 10px 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 14px;
             outline: none;
             background: white;
             cursor: pointer;
+            flex: 1;
         }
 
-        .table-wrapper {
+        .filter-select:focus {
+            border-color: #3b82f6;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-            overflow-x: auto;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e8f0fe;
+            transition: box-shadow 0.2s;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .task-card.overdue {
+            border-left: 4px solid #ef4444;
+            background: #fffbfb;
         }
 
-        th {
-            background: #f8f9fb;
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 13px;
+        .task-card.completed {
+            border-left: 4px solid #22c55e;
+            background: #fafff9;
+            opacity: 0.85;
+        }
+
+        .task-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .task-number {
+            font-size: 12px;
+            color: #94a3b8;
             font-weight: 600;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #eee;
-            white-space: nowrap;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        th:hover {
-            background: #eef0f4;
-        }
-
-        th .sort-arrow {
-            margin-left: 4px;
-            opacity: 0.3;
-        }
-
-        th.sorted .sort-arrow {
-            opacity: 1;
-        }
-
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 14px;
-            vertical-align: top;
-        }
-
-        tr:hover {
-            background: #f8f9fb;
-        }
-
-        tr.overdue {
-            background: #fff5f5;
-        }
-
-        tr.completed {
-            background: #f0faf0;
         }
 
         .status-badge {
             display: inline-block;
             padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
         }
 
         .status-new {
-            background: #e3f2fd;
-            color: #1565c0;
+            background: #dbeafe;
+            color: #1d4ed8;
         }
 
         .status-in-progress {
-            background: #fff3e0;
-            color: #e65100;
+            background: #fef3c7;
+            color: #d97706;
         }
 
         .status-waiting {
-            background: #fce4ec;
-            color: #c62828;
+            background: #fce7f3;
+            color: #db2777;
         }
 
         .status-completed {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: #dcfce7;
+            color: #16a34a;
         }
 
-        .actions {
+        .task-summary {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .task-details {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .task-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .task-detail-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 1px;
+            opacity: 0.5;
+        }
+
+        .task-detail-label {
+            color: #94a3b8;
+            font-weight: 500;
+            white-space: nowrap;
+            min-width: 80px;
+        }
+
+        .task-detail-value {
+            color: #475569;
+            word-break: break-word;
+        }
+
+        .task-notes {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .task-notes-label {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+
+        .task-notes-text {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .task-actions {
             display: flex;
             gap: 6px;
         }
 
-        .actions .btn {
-            padding: 6px 12px;
-            font-size: 12px;
+        .task-actions .btn {
+            flex: 1;
+            padding: 9px 12px;
+            font-size: 13px;
+            text-align: center;
         }
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #999;
+            padding: 48px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.4;
         }
 
         .empty-state p {
-            font-size: 16px;
-            margin-bottom: 8px;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .empty-state .sub {
+            font-size: 13px;
         }
 
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
         }
 
         .modal-overlay.active {
@@ -275,30 +358,45 @@
 
         .modal {
             background: white;
-            border-radius: 16px;
-            padding: 32px;
-            width: 90%;
+            border-radius: 20px 20px 0 0;
+            padding: 24px 16px 32px;
+            width: 100%;
             max-width: 560px;
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 0 auto 16px;
         }
 
         .modal h2 {
             font-size: 20px;
-            margin-bottom: 24px;
-            color: #1a1a2e;
+            margin-bottom: 20px;
+            color: #1e293b;
+            font-weight: 700;
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
             font-size: 13px;
             font-weight: 600;
-            color: #555;
+            color: #64748b;
             margin-bottom: 6px;
         }
 
@@ -306,110 +404,128 @@
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
             font-family: inherit;
             outline: none;
             transition: border-color 0.2s;
+            background: #f8fafc;
         }
 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
-            border-color: #0f3460;
+            border-color: #3b82f6;
+            background: white;
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 72px;
         }
 
         .modal-actions {
             display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 24px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .text-truncate {
-            max-width: 250px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .modal-actions .btn {
+            flex: 1;
+            padding: 14px;
+            font-size: 15px;
         }
 
-        .expand-text {
-            white-space: normal;
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            font-size: 28px;
+            font-weight: 300;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.45);
+            cursor: pointer;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
         }
 
-        @media (max-width: 768px) {
+        .fab:active {
+            transform: scale(0.92);
+        }
+
+        .overdue-date {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        @media (min-width: 600px) {
             .container {
-                padding: 16px;
+                padding: 20px;
             }
 
-            .header {
-                padding: 16px 20px;
-            }
-
-            .header h1 {
-                font-size: 18px;
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
             }
 
             .modal {
-                padding: 24px;
-                width: 95%;
+                border-radius: 20px;
+                margin: auto;
+                max-width: 520px;
             }
 
-            td, th {
-                padding: 10px 12px;
+            .modal-overlay.active {
+                align-items: center;
+            }
+
+            @keyframes slideUp {
+                from { transform: translateY(30px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Учет задач банковского юриста</h1>
-        <p>Система управления юридическими задачами</p>
+        <h1>Задачи банковского юриста</h1>
+        <p>Управление юридическими задачами</p>
     </div>
 
     <div class="container">
         <div class="stats" id="stats"></div>
 
         <div class="controls">
-            <button class="btn btn-primary" onclick="openModal()">+ Новая задача</button>
             <input type="text" class="search-box" id="searchBox" placeholder="Поиск по задачам..." oninput="renderTasks()">
-            <select class="filter-select" id="filterStatus" onchange="renderTasks()">
-                <option value="all">Все статусы</option>
-                <option value="new">Новая</option>
-                <option value="in-progress">В работе</option>
-                <option value="waiting">Ожидание доп. информации</option>
-                <option value="completed">Завершена</option>
-            </select>
-            <button class="btn btn-secondary" onclick="exportCSV()">Экспорт CSV</button>
+            <div class="controls-row">
+                <select class="filter-select" id="filterStatus" onchange="renderTasks()">
+                    <option value="all">Все статусы</option>
+                    <option value="new">Новая</option>
+                    <option value="in-progress">В работе</option>
+                    <option value="waiting">Ожидание</option>
+                    <option value="completed">Завершена</option>
+                </select>
+                <button class="btn btn-secondary" onclick="exportCSV()">CSV</button>
+            </div>
         </div>
 
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th onclick="sortBy('id')">№ <span class="sort-arrow">&#9650;</span></th>
-                        <th onclick="sortBy('dateReceived')">Дата поступления <span class="sort-arrow">&#9650;</span></th>
-                        <th onclick="sortBy('summary')">Краткая суть <span class="sort-arrow">&#9650;</span></th>
-                        <th onclick="sortBy('additionalInfo')">Доп. информация <span class="sort-arrow">&#9650;</span></th>
-                        <th onclick="sortBy('responseDate')">Дата ответа <span class="sort-arrow">&#9650;</span></th>
-                        <th onclick="sortBy('status')">Статус <span class="sort-arrow">&#9650;</span></th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody id="taskTableBody"></tbody>
-            </table>
-        </div>
+        <div class="task-list" id="taskList"></div>
     </div>
+
+    <button class="fab" onclick="openModal()" aria-label="Новая задача">+</button>
 
     <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
         <div class="modal">
+            <div class="modal-handle"></div>
             <h2 id="modalTitle">Новая задача</h2>
             <form id="taskForm" onsubmit="saveTask(event)">
                 <input type="hidden" id="taskId">
@@ -423,7 +539,7 @@
                 </div>
                 <div class="form-group">
                     <label for="additionalInfo">Что требуется получить дополнительно</label>
-                    <textarea id="additionalInfo" placeholder="Укажите необходимые документы, сведения..."></textarea>
+                    <textarea id="additionalInfo" placeholder="Документы, сведения..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="responseDate">Дата предоставления ответа</label>
@@ -439,8 +555,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="notes">Примечания</label>
-                    <textarea id="notes" placeholder="Дополнительные заметки..."></textarea>
+                    <label for="notes">Заметки</label>
+                    <textarea id="notes" placeholder="Ваши заметки по задаче..."></textarea>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
@@ -492,16 +608,11 @@
             const total = tasks.length;
             const active = tasks.filter(t => t.status !== 'completed').length;
             const overdue = tasks.filter(t => isOverdue(t)).length;
-            const completedThisMonth = tasks.filter(t => {
-                if (t.status !== 'completed') return false;
-                const now = new Date();
-                const taskDate = new Date(t.responseDate || t.dateReceived);
-                return taskDate.getMonth() === now.getMonth() && taskDate.getFullYear() === now.getFullYear();
-            }).length;
+            const completed = tasks.filter(t => t.status === 'completed').length;
 
             document.getElementById('stats').innerHTML = `
                 <div class="stat-card">
-                    <div class="label">Всего задач</div>
+                    <div class="label">Всего</div>
                     <div class="value">${total}</div>
                 </div>
                 <div class="stat-card">
@@ -513,8 +624,8 @@
                     <div class="value">${overdue}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="label">Завершено в этом месяце</div>
-                    <div class="value">${completedThisMonth}</div>
+                    <div class="label">Завершено</div>
+                    <div class="value">${completed}</div>
                 </div>
             `;
         }
@@ -549,53 +660,71 @@
             return filtered;
         }
 
-        function sortBy(field) {
-            if (currentSort.field === field) {
-                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.field = field;
-                currentSort.direction = 'asc';
-            }
-            renderTasks();
-        }
-
         function renderTasks() {
             updateStats();
             const filtered = getFilteredTasks();
-            const tbody = document.getElementById('taskTableBody');
+            const list = document.getElementById('taskList');
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <p>${tasks.length === 0 ? 'Нет задач' : 'Нет задач, соответствующих фильтру'}</p>
-                                <p style="font-size: 13px">${tasks.length === 0 ? 'Нажмите "Новая задача" чтобы добавить первую' : ''}</p>
-                            </div>
-                        </td>
-                    </tr>
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">&#128221;</div>
+                        <p>${tasks.length === 0 ? 'Нет задач' : 'Ничего не найдено'}</p>
+                        <p class="sub">${tasks.length === 0 ? 'Нажмите + чтобы добавить' : 'Попробуйте изменить фильтр'}</p>
+                    </div>
                 `;
                 return;
             }
 
-            tbody.innerHTML = filtered.map(task => {
-                const rowClass = task.status === 'completed' ? 'completed' : isOverdue(task) ? 'overdue' : '';
+            list.innerHTML = filtered.map(task => {
+                const cardClass = task.status === 'completed' ? 'completed' : isOverdue(task) ? 'overdue' : '';
+                const dateClass = isOverdue(task) ? 'overdue-date' : '';
+
+                let notesHtml = '';
+                if (task.notes) {
+                    notesHtml = `
+                        <div class="task-notes">
+                            <div class="task-notes-label">Заметки</div>
+                            <div class="task-notes-text">${escapeHtml(task.notes)}</div>
+                        </div>
+                    `;
+                }
+
+                let additionalHtml = '';
+                if (task.additionalInfo) {
+                    additionalHtml = `
+                        <div class="task-detail">
+                            <span class="task-detail-label">Доп. инфо:</span>
+                            <span class="task-detail-value">${escapeHtml(task.additionalInfo)}</span>
+                        </div>
+                    `;
+                }
+
                 return `
-                    <tr class="${rowClass}">
-                        <td>${task.id}</td>
-                        <td style="white-space:nowrap">${formatDate(task.dateReceived)}</td>
-                        <td class="text-truncate" title="${escapeHtml(task.summary)}">${escapeHtml(task.summary)}</td>
-                        <td class="text-truncate" title="${escapeHtml(task.additionalInfo || '')}">${escapeHtml(task.additionalInfo || '—')}</td>
-                        <td style="white-space:nowrap">${formatDate(task.responseDate)}</td>
-                        <td><span class="status-badge ${statusClass(task.status)}">${statusLabel(task.status)}</span></td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn btn-secondary" onclick="editTask(${task.id})">Изменить</button>
-                                ${task.status !== 'completed' ? `<button class="btn btn-success" onclick="completeTask(${task.id})">Завершить</button>` : ''}
-                                <button class="btn btn-danger" onclick="deleteTask(${task.id})">Удалить</button>
+                    <div class="task-card ${cardClass}">
+                        <div class="task-card-header">
+                            <span class="task-number">#${task.id}</span>
+                            <span class="status-badge ${statusClass(task.status)}">${statusLabel(task.status)}</span>
+                        </div>
+                        <div class="task-summary">${escapeHtml(task.summary)}</div>
+                        <div class="task-details">
+                            <div class="task-detail">
+                                <span class="task-detail-label">Поступила:</span>
+                                <span class="task-detail-value">${formatDate(task.dateReceived)}</span>
                             </div>
-                        </td>
-                    </tr>
+                            ${additionalHtml}
+                            <div class="task-detail">
+                                <span class="task-detail-label">Ответ до:</span>
+                                <span class="task-detail-value ${dateClass}">${formatDate(task.responseDate)}</span>
+                            </div>
+                        </div>
+                        ${notesHtml}
+                        <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="editTask(${task.id})">Изменить</button>
+                            ${task.status !== 'completed' ? `<button class="btn btn-success" onclick="completeTask(${task.id})">Завершить</button>` : ''}
+                            <button class="btn btn-danger" onclick="deleteTask(${task.id})">Удалить</button>
+                        </div>
+                    </div>
                 `;
             }).join('');
         }
@@ -606,15 +735,11 @@
             return div.innerHTML;
         }
 
-        function openModal(taskId) {
-            document.getElementById('modalTitle').textContent = taskId ? 'Редактировать задачу' : 'Новая задача';
+        function openModal() {
+            document.getElementById('modalTitle').textContent = 'Новая задача';
             document.getElementById('taskForm').reset();
             document.getElementById('taskId').value = '';
-
-            if (!taskId) {
-                document.getElementById('dateReceived').value = new Date().toISOString().split('T')[0];
-            }
-
+            document.getElementById('dateReceived').value = new Date().toISOString().split('T')[0];
             document.getElementById('modalOverlay').classList.add('active');
         }
 
@@ -630,7 +755,7 @@
             const task = tasks.find(t => t.id === id);
             if (!task) return;
 
-            document.getElementById('modalTitle').textContent = 'Редактировать задачу';
+            document.getElementById('modalTitle').textContent = 'Редактировать задачу #' + task.id;
             document.getElementById('taskId').value = task.id;
             document.getElementById('dateReceived').value = task.dateReceived;
             document.getElementById('summary').value = task.summary;
@@ -682,7 +807,7 @@
         }
 
         function deleteTask(id) {
-            if (!confirm('Удалить задачу №' + id + '?')) return;
+            if (!confirm('Удалить задачу #' + id + '?')) return;
             tasks = tasks.filter(t => t.id !== id);
             saveTasks();
             renderTasks();
@@ -693,7 +818,7 @@
                 alert('Нет задач для экспорта');
                 return;
             }
-            const headers = ['№', 'Дата поступления', 'Краткая суть', 'Доп. информация', 'Дата ответа', 'Статус', 'Примечания'];
+            const headers = ['№', 'Дата поступления', 'Краткая суть', 'Доп. информация', 'Дата ответа', 'Статус', 'Заметки'];
             const rows = getFilteredTasks().map(t => [
                 t.id,
                 formatDate(t.dateReceived),
