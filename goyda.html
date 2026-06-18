@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Процент Гойды в России</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .gradient-bg .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s !important;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.25), transparent);
+            top: 50%;
+            right: -5%;
+            animation-delay: -3s !important;
+        }
+
+        .blob-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2), transparent);
+            bottom: -5%;
+            left: 30%;
+            animation-delay: -5s !important;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: color 0.3s;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 100px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            font-size: 0.85rem;
+            color: #a78bfa;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 500px;
+            line-height: 1.7;
+            margin-bottom: 60px;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .percent-container {
+            position: relative;
+            margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .percent-circle {
+            width: 320px;
+            height: 320px;
+            position: relative;
+        }
+
+        .percent-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .percent-circle .track {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 8;
+        }
+
+        .percent-circle .progress {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 879.6;
+            stroke-dashoffset: 879.6;
+            animation: drawCircle 2s ease-out 0.8s forwards;
+        }
+
+        @keyframes drawCircle {
+            to { stroke-dashoffset: 343.0; }
+        }
+
+        .percent-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .percent-number {
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: -3px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .percent-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 4px;
+        }
+
+        .glow-ring {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.1), transparent, rgba(236, 72, 153, 0.1), transparent);
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .stats-section {
+            padding: 80px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #8b5cf6;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -1px;
+            margin-bottom: 60px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 36px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon.purple { background: rgba(139, 92, 246, 0.15); }
+        .stat-icon.pink { background: rgba(236, 72, 153, 0.15); }
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.15); }
+        .stat-icon.green { background: rgba(16, 185, 129, 0.15); }
+        .stat-icon.orange { background: rgba(245, 158, 11, 0.15); }
+        .stat-icon.red { background: rgba(239, 68, 68, 0.15); }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-desc {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.6;
+        }
+
+        .regions-section {
+            padding: 80px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .region-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .region-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 28px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .region-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .region-rank {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.3);
+            min-width: 30px;
+        }
+
+        .region-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .region-bar-container {
+            flex: 2;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .region-bar {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            transition: width 1s ease-out;
+        }
+
+        .region-percent {
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 60px;
+            text-align: right;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dynamics-section {
+            padding: 80px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 250px;
+            gap: 12px;
+            padding-top: 20px;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .chart-bar {
+            width: 100%;
+            max-width: 60px;
+            border-radius: 8px 8px 4px 4px;
+            background: linear-gradient(180deg, #8b5cf6, #6d28d9);
+            position: relative;
+            transition: all 0.3s;
+            animation: growBar 1.5s ease-out forwards;
+            transform-origin: bottom;
+        }
+
+        .chart-bar:hover {
+            filter: brightness(1.3);
+        }
+
+        .chart-bar.current {
+            background: linear-gradient(180deg, #ec4899, #be185d);
+        }
+
+        @keyframes growBar {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+
+        .chart-bar-value {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .chart-bar-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .fun-section {
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .fun-quote {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 300;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .fun-quote span {
+            color: #fff;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 40px;
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: fadeInUp 0.8s ease-out 1.5s both;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: rotate(45deg) translate(0, 0); }
+            50% { transform: rotate(45deg) translate(5px, 5px); }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 20px; }
+            .nav-links { display: none; }
+            .percent-circle { width: 250px; height: 250px; }
+            .glow-ring { width: 290px; height: 290px; top: -20px; left: -20px; }
+            .percent-number { font-size: 3.5rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .region-bar-container { display: none; }
+            .chart { gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="gradient-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav>
+        <div class="logo">GOYDA INDEX</div>
+        <ul class="nav-links">
+            <li><a href="#stats">Статистика</a></li>
+            <li><a href="#regions">Регионы</a></li>
+            <li><a href="#dynamics">Динамика</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge">
+            <div class="dot"></div>
+            Данные обновлены — Июнь 2026
+        </div>
+        <h1>Процент <span class="gradient-text">Гойды</span><br>в России</h1>
+        <p>Независимый мониторинг уровня гойды по всей территории Российской Федерации</p>
+
+        <div class="percent-container">
+            <div class="glow-ring"></div>
+            <div class="percent-circle">
+                <svg viewBox="0 0 300 300">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#8b5cf6"/>
+                            <stop offset="100%" stop-color="#ec4899"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="track" cx="150" cy="150" r="140"/>
+                    <circle class="progress" cx="150" cy="150" r="140"/>
+                </svg>
+                <div class="percent-value">
+                    <div class="percent-number" id="percentCounter">0%</div>
+                    <div class="percent-label">Уровень гойды</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <span>Листай вниз</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <section class="stats-section" id="stats">
+        <div class="section-label">Статистика</div>
+        <div class="section-title">Ключевые показатели</div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">📊</div>
+                <div class="stat-number">61%</div>
+                <div class="stat-title">Общий уровень гойды</div>
+                <div class="stat-desc">Средний показатель по всем регионам России на текущий момент</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pink">📈</div>
+                <div class="stat-number">+4.2%</div>
+                <div class="stat-title">Рост за месяц</div>
+                <div class="stat-desc">Прирост уровня гойды по сравнению с прошлым месяцем</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">🗺️</div>
+                <div class="stat-number">85</div>
+                <div class="stat-title">Регионов охвачено</div>
+                <div class="stat-desc">Количество субъектов РФ, где проводится мониторинг</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">🔥</div>
+                <div class="stat-number">78%</div>
+                <div class="stat-title">Пик гойды</div>
+                <div class="stat-desc">Максимальный зафиксированный уровень в отдельном регионе</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">⚡</div>
+                <div class="stat-number">24/7</div>
+                <div class="stat-title">Мониторинг</div>
+                <div class="stat-desc">Непрерывное отслеживание уровня гойды в реальном времени</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">🎯</div>
+                <div class="stat-number">99.7%</div>
+                <div class="stat-title">Точность данных</div>
+                <div class="stat-desc">Достоверность показаний гойда-сенсоров по всей стране</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="regions-section" id="regions">
+        <div class="section-label">Регионы</div>
+        <div class="section-title">Топ регионов по уровню гойды</div>
+        <div class="region-list">
+            <div class="region-item">
+                <div class="region-rank">01</div>
+                <div class="region-name">Москва</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 78%"></div></div>
+                <div class="region-percent">78%</div>
+            </div>
+            <div class="region-item">
+                <div class="region-rank">02</div>
+                <div class="region-name">Санкт-Петербург</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 74%"></div></div>
+                <div class="region-percent">74%</div>
+            </div>
+            <div class="region-item">
+                <div class="region-rank">03</div>
+                <div class="region-name">Краснодарский край</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 71%"></div></div>
+                <div class="region-percent">71%</div>
+            </div>
+            <div class="region-item">
+                <div class="region-rank">04</div>
+                <div class="region-name">Новосибирская область</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 67%"></div></div>
+                <div class="region-percent">67%</div>
+            </div>
+            <div class="region-item">
+                <div class="region-rank">05</div>
+                <div class="region-name">Свердловская область</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 65%"></div></div>
+                <div class="region-percent">65%</div>
+            </div>
+            <div class="region-item">
+                <div class="region-rank">06</div>
+                <div class="region-name">Татарстан</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 63%"></div></div>
+                <div class="region-percent">63%</div>
+            </div>
+            <div class="region-item">
+                <div class="region-rank">07</div>
+                <div class="region-name">Приморский край</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 59%"></div></div>
+                <div class="region-percent">59%</div>
+            </div>
+            <div class="region-item">
+                <div class="region-rank">08</div>
+                <div class="region-name">Нижегородская область</div>
+                <div class="region-bar-container"><div class="region-bar" style="width: 56%"></div></div>
+                <div class="region-percent">56%</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dynamics-section" id="dynamics">
+        <div class="section-label">Динамика</div>
+        <div class="section-title">Уровень гойды по годам</div>
+        <div class="chart-container">
+            <div class="chart">
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">12%</div>
+                    <div class="chart-bar" style="height: 15%"></div>
+                    <div class="chart-bar-label">2019</div>
+                </div>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">18%</div>
+                    <div class="chart-bar" style="height: 23%"></div>
+                    <div class="chart-bar-label">2020</div>
+                </div>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">25%</div>
+                    <div class="chart-bar" style="height: 32%"></div>
+                    <div class="chart-bar-label">2021</div>
+                </div>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">34%</div>
+                    <div class="chart-bar" style="height: 43%"></div>
+                    <div class="chart-bar-label">2022</div>
+                </div>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">41%</div>
+                    <div class="chart-bar" style="height: 52%"></div>
+                    <div class="chart-bar-label">2023</div>
+                </div>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">53%</div>
+                    <div class="chart-bar" style="height: 68%"></div>
+                    <div class="chart-bar-label">2024</div>
+                </div>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">57%</div>
+                    <div class="chart-bar" style="height: 73%"></div>
+                    <div class="chart-bar-label">2025</div>
+                </div>
+                <div class="chart-bar-wrapper">
+                    <div class="chart-bar-value">61%</div>
+                    <div class="chart-bar current" style="height: 78%"></div>
+                    <div class="chart-bar-label">2026</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="fun-section">
+        <div class="fun-quote">
+            Гойда — это не просто слово.<br>
+            Гойда — это <span>состояние души</span>.
+        </div>
+    </section>
+
+    <footer>
+        <p>GOYDA INDEX 2026 — Независимый мониторинг уровня гойды в России</p>
+    </footer>
+
+    <script>
+        const counter = document.getElementById('percentCounter');
+        let current = 0;
+        const target = 61;
+        const duration = 2000;
+        const startTime = performance.now();
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function animateCounter(timestamp) {
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            current = Math.round(easeOutCubic(progress) * target);
+            counter.textContent = current + '%';
+            if (progress < 1) requestAnimationFrame(animateCounter);
+        }
+
+        setTimeout(() => requestAnimationFrame(animateCounter), 800);
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.stat-card, .region-item, .chart-bar-wrapper').forEach((el, i) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = `all 0.6s cubic-bezier(0.4, 0, 0.2, 1) ${i * 0.08}s`;
+            observer.observe(el);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
