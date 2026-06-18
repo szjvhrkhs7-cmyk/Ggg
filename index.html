@@ -23,7 +23,7 @@
         .header {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
             color: white;
-            padding: 20px 16px;
+            padding: 20px 16px 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -43,6 +43,42 @@
             font-weight: 400;
         }
 
+        .tabs {
+            display: flex;
+            margin-top: 14px;
+            gap: 0;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.65);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        .tab .tab-count {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 1px 7px;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+
+        .tab.active .tab-count {
+            background: rgba(255,255,255,0.35);
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -51,7 +87,7 @@
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 8px;
             margin-bottom: 12px;
         }
@@ -143,6 +179,15 @@
             background: #dcfce7;
         }
 
+        .btn-reopen {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .btn-reopen:active {
+            background: #ffedd5;
+        }
+
         .search-box {
             flex: 1;
             padding: 12px 14px;
@@ -185,7 +230,7 @@
             padding: 16px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
             border: 1px solid #e8f0fe;
-            transition: box-shadow 0.2s;
+            transition: all 0.3s;
         }
 
         .task-card.overdue {
@@ -196,7 +241,6 @@
         .task-card.completed {
             border-left: 4px solid #22c55e;
             background: #fafff9;
-            opacity: 0.85;
         }
 
         .task-card-header {
@@ -297,14 +341,6 @@
             font-size: 13px;
         }
 
-        .task-detail-icon {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-            margin-top: 1px;
-            opacity: 0.5;
-        }
-
         .task-detail-label {
             color: #94a3b8;
             font-weight: 500;
@@ -403,6 +439,12 @@
             text-align: center;
             margin-bottom: 12px;
             line-height: 1.4;
+        }
+
+        .completed-date {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 6px;
         }
 
         .empty-state {
@@ -559,7 +601,6 @@
             }
 
             .stats {
-                grid-template-columns: repeat(4, 1fr);
                 gap: 12px;
             }
 
@@ -584,6 +625,10 @@
     <div class="header">
         <h1>Задачи банковского юриста</h1>
         <p>Управление юридическими задачами</p>
+        <div class="tabs">
+            <div class="tab active" id="tabActive" onclick="switchTab('active')">В работе <span class="tab-count" id="activeCount">0</span></div>
+            <div class="tab" id="tabCompleted" onclick="switchTab('completed')">Завершено <span class="tab-count" id="completedCount">0</span></div>
+        </div>
     </div>
 
     <div class="container">
@@ -591,13 +636,12 @@
 
         <div class="controls">
             <input type="text" class="search-box" id="searchBox" placeholder="Поиск по задачам..." oninput="renderTasks()">
-            <div class="controls-row">
+            <div class="controls-row" id="activeFilters">
                 <select class="filter-select" id="filterStatus" onchange="renderTasks()">
-                    <option value="all">Все статусы</option>
+                    <option value="all">Все активные</option>
                     <option value="new">Новая</option>
                     <option value="in-progress">В работе</option>
                     <option value="waiting">Ожидание</option>
-                    <option value="completed">Завершена</option>
                 </select>
                 <button class="btn btn-secondary" onclick="exportCSV()">CSV</button>
             </div>
@@ -678,7 +722,19 @@
     </div>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('lawyerTasks') || '[]');
+        const DEFAULT_TASKS = [
+            {"dateReceived":"2026-06-17","summary":"Правовой анализ договоров банковского вклада, информации на сайте и в ДБО в части повышенной процентной ставки по вкладу и НС","additionalInfo":"Собрать документы, сведения и проанализировать сайт и МКБО","responseDate":"2026-06-24","reminderDays":1,"priority":"high","status":"waiting","notes":"","id":1,"createdAt":"2026-06-17T14:52:34.353Z"},
+            {"dateReceived":"2026-06-17","summary":"Задача по вопросу прекращения ДКБО","additionalInfo":"Жду Стаса","responseDate":"","reminderDays":1,"priority":"none","status":"new","notes":"","id":2,"createdAt":"2026-06-17T14:52:53.287Z"},
+            {"dateReceived":"2026-06-17","summary":"Задача от Бурковой по форме обращения","additionalInfo":"Остудил со Стасом, надо выпустить","responseDate":"2026-06-18","reminderDays":1,"priority":"none","status":"completed","notes":"","id":3,"createdAt":"2026-06-17T14:53:12.145Z"}
+        ];
+
+        let tasks = JSON.parse(localStorage.getItem('lawyerTasks') || 'null');
+        if (!tasks) {
+            tasks = DEFAULT_TASKS;
+            localStorage.setItem('lawyerTasks', JSON.stringify(tasks));
+        }
+
+        let currentTab = 'active';
         let currentSort = { field: 'id', direction: 'desc' };
 
         function getNextId() {
@@ -715,17 +771,27 @@
             return new Date(task.responseDate) < new Date(new Date().toISOString().split('T')[0]);
         }
 
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabActive').classList.toggle('active', tab === 'active');
+            document.getElementById('tabCompleted').classList.toggle('active', tab === 'completed');
+            document.getElementById('activeFilters').style.display = tab === 'active' ? 'flex' : 'none';
+            renderTasks();
+        }
+
+        function updateTabCounts() {
+            const active = tasks.filter(t => t.status !== 'completed').length;
+            const completed = tasks.filter(t => t.status === 'completed').length;
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('completedCount').textContent = completed;
+        }
+
         function updateStats() {
-            const total = tasks.length;
             const active = tasks.filter(t => t.status !== 'completed').length;
             const overdue = tasks.filter(t => isOverdue(t)).length;
             const completed = tasks.filter(t => t.status === 'completed').length;
 
             document.getElementById('stats').innerHTML = `
-                <div class="stat-card">
-                    <div class="label">Всего</div>
-                    <div class="value">${total}</div>
-                </div>
                 <div class="stat-card">
                     <div class="label">В работе</div>
                     <div class="value">${active}</div>
@@ -746,21 +812,30 @@
             const filterStatus = document.getElementById('filterStatus').value;
 
             let filtered = tasks.filter(t => {
+                if (currentTab === 'active' && t.status === 'completed') return false;
+                if (currentTab === 'completed' && t.status !== 'completed') return false;
+
                 const matchesSearch = !search ||
                     t.summary.toLowerCase().includes(search) ||
                     (t.additionalInfo && t.additionalInfo.toLowerCase().includes(search)) ||
                     (t.notes && t.notes.toLowerCase().includes(search)) ||
                     String(t.id).includes(search);
-                const matchesFilter = filterStatus === 'all' || t.status === filterStatus;
+
+                let matchesFilter = true;
+                if (currentTab === 'active' && filterStatus !== 'all') {
+                    matchesFilter = t.status === filterStatus;
+                }
                 return matchesSearch && matchesFilter;
             });
 
             const priorityWeight = { high: 3, medium: 2, low: 1, none: 0 };
 
             filtered.sort((a, b) => {
-                const pA = priorityWeight[a.priority || 'none'] || 0;
-                const pB = priorityWeight[b.priority || 'none'] || 0;
-                if (pA !== pB) return pB - pA;
+                if (currentTab === 'active') {
+                    const pA = priorityWeight[a.priority || 'none'] || 0;
+                    const pB = priorityWeight[b.priority || 'none'] || 0;
+                    if (pA !== pB) return pB - pA;
+                }
 
                 let valA = a[currentSort.field];
                 let valB = b[currentSort.field];
@@ -779,15 +854,17 @@
 
         function renderTasks() {
             updateStats();
+            updateTabCounts();
             const filtered = getFilteredTasks();
             const list = document.getElementById('taskList');
 
             if (filtered.length === 0) {
+                const isActive = currentTab === 'active';
                 list.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">&#128221;</div>
-                        <p>${tasks.length === 0 ? 'Нет задач' : 'Ничего не найдено'}</p>
-                        <p class="sub">${tasks.length === 0 ? 'Нажмите + чтобы добавить' : 'Попробуйте изменить фильтр'}</p>
+                        <div class="empty-state-icon">${isActive ? '&#128221;' : '&#9989;'}</div>
+                        <p>${isActive ? 'Нет активных задач' : 'Нет завершённых задач'}</p>
+                        <p class="sub">${isActive ? 'Нажмите + чтобы добавить' : 'Завершённые задачи появятся здесь'}</p>
                     </div>
                 `;
                 return;
@@ -796,7 +873,7 @@
             list.innerHTML = filtered.map(task => {
                 const pri = task.priority || 'none';
                 let cardClass = task.status === 'completed' ? 'completed' : isOverdue(task) ? 'overdue' : '';
-                if (pri === 'high' || pri === 'medium') {
+                if (currentTab === 'active' && (pri === 'high' || pri === 'medium')) {
                     cardClass += ' priority-' + pri + '-card';
                 }
                 const dateClass = isOverdue(task) ? 'overdue-date' : '';
@@ -827,6 +904,30 @@
                     `;
                 }
 
+                let actionsHtml;
+                if (currentTab === 'completed') {
+                    actionsHtml = `
+                        <div class="task-actions">
+                            <button class="btn btn-reopen" onclick="reopenTask(${task.id})">Вернуть в работу</button>
+                            <button class="btn btn-danger" onclick="deleteTask(${task.id})">Удалить</button>
+                        </div>
+                    `;
+                } else {
+                    actionsHtml = `
+                        <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="editTask(${task.id})">Изменить</button>
+                            <button class="btn btn-success" onclick="completeTask(${task.id})">Готово</button>
+                            ${task.responseDate ? `<button class="btn btn-calendar" onclick="addToCalendar(${task.id})">Календарь</button>` : ''}
+                            <button class="btn btn-danger" onclick="deleteTask(${task.id})">Удалить</button>
+                        </div>
+                    `;
+                }
+
+                let completedDateHtml = '';
+                if (task.status === 'completed' && task.completedAt) {
+                    completedDateHtml = `<div class="completed-date">Завершена: ${formatDate(task.completedAt)}</div>`;
+                }
+
                 return `
                     <div class="task-card ${cardClass}">
                         <div class="task-card-header">
@@ -846,12 +947,8 @@
                             </div>
                         </div>
                         ${notesHtml}
-                        <div class="task-actions">
-                            <button class="btn btn-secondary" onclick="editTask(${task.id})">Изменить</button>
-                            ${task.status !== 'completed' ? `<button class="btn btn-success" onclick="completeTask(${task.id})">Готово</button>` : ''}
-                            ${task.responseDate ? `<button class="btn btn-calendar" onclick="addToCalendar(${task.id})">Календарь</button>` : ''}
-                            <button class="btn btn-danger" onclick="deleteTask(${task.id})">Удалить</button>
-                        </div>
+                        ${completedDateHtml}
+                        ${actionsHtml}
                     </div>
                 `;
             }).join('');
@@ -883,7 +980,7 @@
             const task = tasks.find(t => t.id === id);
             if (!task) return;
 
-            document.getElementById('modalTitle').textContent = 'Редактировать задачу #' + task.id;
+            document.getElementById('modalTitle').textContent = 'Редактировать #' + task.id;
             document.getElementById('taskId').value = task.id;
             document.getElementById('dateReceived').value = task.dateReceived;
             document.getElementById('summary').value = task.summary;
@@ -900,6 +997,7 @@
         function saveTask(e) {
             e.preventDefault();
             const id = document.getElementById('taskId').value;
+            const newStatus = document.getElementById('status').value;
             const taskData = {
                 dateReceived: document.getElementById('dateReceived').value,
                 summary: document.getElementById('summary').value.trim(),
@@ -907,9 +1005,13 @@
                 responseDate: document.getElementById('responseDate').value,
                 reminderDays: parseInt(document.getElementById('reminderDays').value) || 0,
                 priority: document.getElementById('priority').value,
-                status: document.getElementById('status').value,
+                status: newStatus,
                 notes: document.getElementById('notes').value.trim()
             };
+
+            if (newStatus === 'completed') {
+                taskData.completedAt = new Date().toISOString().split('T')[0];
+            }
 
             if (id) {
                 const idx = tasks.findIndex(t => t.id === Number(id));
@@ -931,11 +1033,21 @@
             const task = tasks.find(t => t.id === id);
             if (!task) return;
             task.status = 'completed';
+            task.completedAt = new Date().toISOString().split('T')[0];
             if (!task.responseDate) {
-                task.responseDate = new Date().toISOString().split('T')[0];
+                task.responseDate = task.completedAt;
             }
             saveTasks();
             renderTasks();
+        }
+
+        function reopenTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+            task.status = 'in-progress';
+            delete task.completedAt;
+            saveTasks();
+            switchTab('active');
         }
 
         function deleteTask(id) {
@@ -952,7 +1064,7 @@
             }
             const priLabels = { high: 'Высокая', medium: 'Средняя', low: 'Низкая', none: 'Обычная' };
             const headers = ['№', 'Дата поступления', 'Краткая суть', 'Доп. информация', 'Дата ответа', 'Значимость', 'Статус', 'Заметки'];
-            const rows = getFilteredTasks().map(t => [
+            const rows = tasks.map(t => [
                 t.id,
                 formatDate(t.dateReceived),
                 '"' + (t.summary || '').replace(/"/g, '""') + '"',
@@ -1072,7 +1184,7 @@
                     }
                     const count = restored.length;
                     if (tasks.length > 0) {
-                        if (!confirm('У вас ' + tasks.length + ' задач. Заменить на ' + count + ' из файла?\n\nНажмите OK для замены или Отмена чтобы добавить к существующим.')) {
+                        if (!confirm('У вас ' + tasks.length + ' задач. Заменить на ' + count + ' из файла?\n\nOK — заменить, Отмена — добавить к существующим.')) {
                             const maxId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
                             restored.forEach((t, i) => { t.id = maxId + i + 1; });
                             tasks = tasks.concat(restored);
@@ -1086,7 +1198,7 @@
                     renderTasks();
                     alert('Восстановлено задач: ' + count);
                 } catch (err) {
-                    alert('Ошибка чтения файла. Убедитесь, что это файл резервной копии.');
+                    alert('Ошибка чтения файла.');
                 }
             };
             reader.readAsText(file);
@@ -1105,11 +1217,11 @@
                 const days = Math.floor((new Date() - d) / 86400000);
                 let text = 'Последняя копия: ' + formatDate(d.toISOString().split('T')[0]);
                 if (days >= 3) {
-                    text += ' — рекомендуем сохранить новую копию';
+                    text += ' — рекомендуем сохранить новую!';
                 }
                 info.textContent = text;
             } else {
-                info.textContent = 'Резервная копия ещё не создавалась — сохраните копию!';
+                info.textContent = 'Сохраните резервную копию задач!';
             }
         }
 
