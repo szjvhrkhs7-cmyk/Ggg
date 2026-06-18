@@ -7,182 +7,238 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f6ff; color: #1e293b; min-height: 100vh; padding-bottom: 80px;
+            font-family: Georgia, 'Times New Roman', serif;
+            background: #f4f7fc; color: #1a1a2e; min-height: 100vh; padding-bottom: 90px;
+            -webkit-font-smoothing: antialiased;
         }
+
+        /* Header */
         .header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
-            color: white; padding: 20px 16px;
+            background: linear-gradient(160deg, #2d3a8c 0%, #1e3a5f 40%, #0f2b46 100%);
+            color: white; padding: 22px 16px 0;
             position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 4px 20px rgba(59,130,246,0.3);
+            box-shadow: 0 6px 24px rgba(30,58,95,0.35);
         }
-        .header h1 { font-size: 18px; font-weight: 700; }
-        .header-sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
-        .nav-bar {
-            display: flex; gap: 6px; margin-top: 14px;
-        }
+        .header h1 { font-size: 19px; font-weight: 700; letter-spacing: 0.2px; }
+        .header-sub { font-size: 11px; opacity: 0.7; margin-top: 3px; font-style: italic; }
+        .nav-bar { display: flex; gap: 4px; margin-top: 16px; }
         .nav-btn {
-            flex: 1; text-align: center; padding: 9px 6px; font-size: 12px; font-weight: 600;
-            color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1);
-            border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s;
+            flex: 1; text-align: center; padding: 11px 4px; font-size: 12px; font-weight: 700;
+            font-family: Georgia, serif;
+            color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.08);
+            border: none; border-radius: 12px 12px 0 0; cursor: pointer; transition: all 0.25s;
         }
-        .nav-btn.active { color: #1e40af; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .nav-btn .nav-count {
-            display: inline-block; background: rgba(255,255,255,0.2);
-            border-radius: 8px; padding: 1px 6px; font-size: 10px; margin-left: 3px;
+        .nav-btn.active {
+            color: #1e3a5f; background: #f4f7fc;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
         }
-        .nav-btn.active .nav-count { background: #dbeafe; color: #1e40af; }
-        .container { max-width: 800px; margin: 0 auto; padding: 12px; }
+        .nav-count {
+            display: inline-block; background: rgba(255,255,255,0.18);
+            border-radius: 8px; padding: 1px 7px; font-size: 10px; margin-left: 3px;
+        }
+        .nav-btn.active .nav-count { background: #dde6f5; color: #1e3a5f; }
+
+        /* Container & Pages */
+        .container { max-width: 800px; margin: 0 auto; padding: 14px; }
         .page { display: none; }
         .page.active { display: block; }
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
         .stat-card {
-            background: white; border-radius: 14px; padding: 14px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e8f0fe;
-        }
-        .stat-card .label { font-size: 11px; color: #64748b; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
-        .stat-card .value { font-size: 26px; font-weight: 800; color: #1e40af; margin-top: 2px; }
-        .stat-card.overdue .value { color: #ef4444; }
-        .controls { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-        .controls-row { display: flex; gap: 8px; }
-        .btn {
-            padding: 10px 16px; border: none; border-radius: 12px; cursor: pointer;
-            font-size: 14px; font-weight: 600; transition: all 0.2s; touch-action: manipulation;
-        }
-        .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 2px 8px rgba(59,130,246,0.35); }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-secondary { background: #e8f0fe; color: #1e40af; }
-        .btn-secondary:active { background: #d4e4fd; }
-        .btn-danger { background: #fef2f2; color: #ef4444; }
-        .btn-danger:active { background: #fee2e2; }
-        .btn-success { background: #f0fdf4; color: #16a34a; }
-        .btn-success:active { background: #dcfce7; }
-        .btn-calendar { background: #eff6ff; color: #2563eb; }
-        .btn-calendar:active { background: #dbeafe; }
-        .btn-reopen { background: #fff7ed; color: #ea580c; }
-        .btn-reopen:active { background: #ffedd5; }
-        .btn-backup { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-        .btn-restore { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
-        .search-box {
-            flex: 1; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 12px;
-            font-size: 15px; outline: none; background: white;
-        }
-        .search-box:focus { border-color: #3b82f6; }
-        .filter-select {
-            padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 12px;
-            font-size: 14px; outline: none; background: white; cursor: pointer; flex: 1;
-        }
-        .task-list { display: flex; flex-direction: column; gap: 10px; }
-        .task-card {
             background: white; border-radius: 16px; padding: 16px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #e8f0fe;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e4eaf4;
         }
-        .task-card.overdue { border-left: 4px solid #ef4444; background: #fffbfb; }
-        .task-card.completed { border-left: 4px solid #22c55e; background: #fafff9; }
-        .task-card.priority-high-card { border-top: 3px solid #dc2626; }
-        .task-card.priority-medium-card { border-top: 3px solid #ea580c; }
+        .stat-card .label { font-size: 10px; color: #7a8599; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; }
+        .stat-card .value { font-size: 28px; font-weight: 700; color: #2d3a8c; margin-top: 4px; }
+        .stat-card.overdue .value { color: #c0392b; }
+
+        /* Controls */
+        .controls { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+        .controls-row { display: flex; gap: 8px; }
+
+        /* Buttons */
+        .btn {
+            padding: 11px 16px; border: none; border-radius: 14px; cursor: pointer;
+            font-size: 13px; font-weight: 700; font-family: Georgia, serif;
+            transition: all 0.2s; touch-action: manipulation;
+        }
+        .btn-primary {
+            background: linear-gradient(160deg, #2d3a8c, #1e3a5f);
+            color: white; box-shadow: 0 3px 12px rgba(45,58,140,0.3);
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-secondary { background: #e4eaf4; color: #2d3a8c; }
+        .btn-secondary:active { background: #d4ddef; }
+        .btn-danger { background: #fdf0ef; color: #c0392b; }
+        .btn-danger:active { background: #f9dbd8; }
+        .btn-success { background: #eef7f0; color: #1a8a4a; }
+        .btn-success:active { background: #d6eeda; }
+        .btn-calendar { background: #edf2fc; color: #2d3a8c; }
+        .btn-calendar:active { background: #dde6f5; }
+        .btn-reopen { background: #fef6ed; color: #b45309; }
+        .btn-reopen:active { background: #fdecd4; }
+        .btn-backup { background: #eef7f0; color: #1a8a4a; border: 1px solid #c3e6cb; }
+        .btn-restore { background: #fef6ed; color: #b45309; border: 1px solid #f5d9a8; }
+
+        /* Inputs */
+        .search-box {
+            flex: 1; padding: 12px 16px; border: 2px solid #dde3ef; border-radius: 14px;
+            font-size: 14px; font-family: Georgia, serif; outline: none; background: white;
+        }
+        .search-box:focus { border-color: #2d3a8c; }
+        .filter-select {
+            padding: 12px 14px; border: 2px solid #dde3ef; border-radius: 14px;
+            font-size: 13px; font-family: Georgia, serif; outline: none; background: white; cursor: pointer; flex: 1;
+        }
+
+        /* Task Cards */
+        .task-list { display: flex; flex-direction: column; gap: 12px; }
+        .task-card {
+            background: white; border-radius: 18px; padding: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e4eaf4;
+            transition: all 0.3s;
+        }
+        .task-card.overdue { border-left: 4px solid #c0392b; background: #fefafa; }
+        .task-card.completed { border-left: 4px solid #1a8a4a; background: #fafdf9; }
+        .task-card.priority-high-card { border-top: 3px solid #c0392b; }
+        .task-card.priority-medium-card { border-top: 3px solid #d4880f; }
         .task-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .task-number { font-size: 12px; color: #94a3b8; font-weight: 600; }
+        .task-number { font-size: 11px; color: #99a3b3; font-weight: 700; font-style: italic; }
         .status-badge {
-            display: inline-block; padding: 4px 10px; border-radius: 20px;
-            font-size: 11px; font-weight: 600;
+            display: inline-block; padding: 4px 11px; border-radius: 20px;
+            font-size: 10px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase;
         }
-        .status-new { background: #dbeafe; color: #1d4ed8; }
-        .status-in-progress { background: #fef3c7; color: #d97706; }
-        .status-waiting { background: #fce7f3; color: #db2777; }
-        .status-completed { background: #dcfce7; color: #16a34a; }
+        .status-new { background: #dde6f5; color: #2d3a8c; }
+        .status-in-progress { background: #fef3cd; color: #b45309; }
+        .status-waiting { background: #f8e1ea; color: #a3295a; }
+        .status-completed { background: #d6eeda; color: #1a8a4a; }
         .priority-badge {
             display: inline-flex; padding: 3px 8px; border-radius: 8px;
-            font-size: 11px; font-weight: 700; margin-left: 6px;
+            font-size: 10px; font-weight: 700; margin-left: 6px; text-transform: uppercase;
         }
-        .priority-high { background: #fef2f2; color: #dc2626; }
-        .priority-medium { background: #fff7ed; color: #ea580c; }
-        .priority-low { background: #f0f9ff; color: #3b82f6; }
-        .task-summary { font-size: 15px; font-weight: 600; color: #1e293b; line-height: 1.4; margin-bottom: 10px; }
-        .task-details { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .priority-high { background: #fdf0ef; color: #c0392b; }
+        .priority-medium { background: #fef6ed; color: #b45309; }
+        .priority-low { background: #edf2fc; color: #2d3a8c; }
+        .task-summary { font-size: 15px; font-weight: 700; color: #1a1a2e; line-height: 1.5; margin-bottom: 12px; }
+        .task-details { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
         .task-detail { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; }
-        .task-detail-label { color: #94a3b8; font-weight: 500; white-space: nowrap; min-width: 80px; }
-        .task-detail-value { color: #475569; word-break: break-word; }
+        .task-detail-label { color: #99a3b3; font-weight: 600; white-space: nowrap; min-width: 82px; font-style: italic; }
+        .task-detail-value { color: #3d4f6a; word-break: break-word; }
         .task-notes {
-            background: #f8fafc; border-radius: 10px; padding: 10px 12px;
-            margin-bottom: 12px; border: 1px solid #e2e8f0;
+            background: #f8f9fc; border-radius: 12px; padding: 12px 14px;
+            margin-bottom: 14px; border: 1px solid #e4eaf4;
         }
-        .task-notes-label { font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-        .task-notes-text { font-size: 13px; color: #475569; line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
+        .task-notes-label { font-size: 10px; color: #99a3b3; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .task-notes-text {
+            font-size: 13px; color: #3d4f6a; line-height: 1.6;
+        }
+        .task-notes-text ul, .task-notes-text ol { padding-left: 20px; margin: 4px 0; }
+        .task-notes-text li { margin-bottom: 2px; }
         .task-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-        .task-actions .btn { flex: 1; padding: 9px 10px; font-size: 12px; text-align: center; min-width: 0; }
-        .overdue-date { color: #ef4444; font-weight: 600; }
-        .completed-date { font-size: 11px; color: #94a3b8; margin-top: 6px; }
+        .task-actions .btn { flex: 1; padding: 10px 10px; font-size: 12px; text-align: center; min-width: 0; }
+        .overdue-date { color: #c0392b; font-weight: 700; }
+        .completed-date { font-size: 11px; color: #99a3b3; margin-top: 8px; font-style: italic; }
+
+        /* Backup */
         .backup-section { display: flex; gap: 8px; margin-bottom: 12px; }
-        .backup-section .btn { flex: 1; font-size: 13px; padding: 10px 8px; }
-        .backup-info { font-size: 11px; color: #94a3b8; text-align: center; margin-bottom: 12px; }
-        .empty-state { text-align: center; padding: 48px 20px; color: #94a3b8; }
-        .empty-state-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
-        .empty-state p { font-size: 15px; margin-bottom: 4px; }
-        .empty-state .sub { font-size: 13px; }
+        .backup-section .btn { flex: 1; font-size: 12px; padding: 10px 8px; }
+        .backup-info { font-size: 11px; color: #99a3b3; text-align: center; margin-bottom: 14px; font-style: italic; }
 
         /* Projects */
-        .project-list { display: flex; flex-direction: column; gap: 10px; }
+        .project-list { display: flex; flex-direction: column; gap: 12px; }
         .project-card {
-            background: white; border-radius: 16px; padding: 16px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #e8f0fe;
-            cursor: pointer; transition: box-shadow 0.2s;
+            background: white; border-radius: 18px; padding: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e4eaf4;
+            cursor: pointer;
         }
-        .project-card:active { box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+        .project-card:active { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
         .project-card-header { display: flex; justify-content: space-between; align-items: center; }
-        .project-name { font-size: 16px; font-weight: 700; color: #1e293b; }
-        .project-count { font-size: 12px; color: #94a3b8; background: #f1f5f9; padding: 3px 10px; border-radius: 12px; }
-        .project-desc { font-size: 13px; color: #64748b; margin-top: 6px; }
-        .project-actions { display: flex; gap: 6px; margin-top: 10px; }
-        .project-actions .btn { padding: 7px 14px; font-size: 12px; }
-        .project-inner-header {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
-        }
+        .project-name { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+        .project-count { font-size: 11px; color: #99a3b3; background: #f0f3f8; padding: 3px 10px; border-radius: 12px; }
+        .project-desc { font-size: 13px; color: #5a6a80; margin-top: 6px; font-style: italic; }
+        .project-actions { display: flex; gap: 6px; margin-top: 12px; }
+        .project-actions .btn { padding: 8px 14px; font-size: 12px; }
+        .project-inner-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
         .back-btn {
-            background: #e8f0fe; color: #1e40af; border: none; border-radius: 10px;
-            padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+            background: #e4eaf4; color: #2d3a8c; border: none; border-radius: 12px;
+            padding: 9px 16px; font-size: 13px; font-weight: 700; font-family: Georgia, serif; cursor: pointer;
         }
-        .project-title { font-size: 17px; font-weight: 700; color: #1e293b; flex: 1; }
+        .project-title { font-size: 17px; font-weight: 700; color: #1a1a2e; flex: 1; }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 52px 20px; color: #99a3b3; }
+        .empty-state-icon { font-size: 48px; margin-bottom: 14px; opacity: 0.35; }
+        .empty-state p { font-size: 15px; margin-bottom: 4px; }
+        .empty-state .sub { font-size: 13px; font-style: italic; }
 
         /* Modal */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
-            background: rgba(15,23,42,0.6); backdrop-filter: blur(4px);
+            background: rgba(15,20,40,0.55); backdrop-filter: blur(6px);
             z-index: 1000; justify-content: center; align-items: flex-end;
         }
         .modal-overlay.active { display: flex; }
         .modal {
-            background: white; border-radius: 20px 20px 0 0;
-            padding: 24px 16px 32px; width: 100%; max-width: 560px;
-            max-height: 92vh; overflow-y: auto;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15); animation: slideUp 0.3s ease-out;
+            background: #f4f7fc; border-radius: 22px 22px 0 0;
+            padding: 20px 16px 34px; width: 100%; max-width: 560px;
+            max-height: 93vh; overflow-y: auto;
+            box-shadow: 0 -12px 48px rgba(0,0,0,0.18); animation: slideUp 0.3s ease-out;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-handle { width: 36px; height: 4px; background: #d1d5db; border-radius: 2px; margin: 0 auto 16px; }
-        .modal h2 { font-size: 20px; margin-bottom: 20px; color: #1e293b; font-weight: 700; }
+        .modal-handle { width: 40px; height: 5px; background: #ccd3df; border-radius: 3px; margin: 0 auto 18px; }
+        .modal h2 { font-size: 20px; margin-bottom: 22px; color: #1a1a2e; font-weight: 700; }
         .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 6px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; color: #7a8599; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
         .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 12px;
-            font-size: 15px; font-family: inherit; outline: none; background: #f8fafc;
+            width: 100%; padding: 13px 14px; border: 2px solid #dde3ef; border-radius: 14px;
+            font-size: 14px; font-family: Georgia, serif; outline: none; background: white;
         }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #3b82f6; background: white; }
-        .form-group textarea { resize: vertical; min-height: 72px; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #2d3a8c; }
+        .form-group textarea { resize: none; min-height: 60px; overflow: hidden; }
+
+        /* Rich Text Editor */
+        .editor-toolbar {
+            display: flex; gap: 2px; padding: 6px 8px; background: #eef1f8; border: 2px solid #dde3ef;
+            border-bottom: none; border-radius: 14px 14px 0 0; flex-wrap: wrap;
+        }
+        .editor-toolbar button {
+            background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 10px;
+            font-size: 13px; cursor: pointer; color: #3d4f6a; font-family: Georgia, serif;
+            font-weight: 700; transition: all 0.15s; min-width: 34px; text-align: center;
+        }
+        .editor-toolbar button:active { background: #dde6f5; }
+        .editor-toolbar .sep { width: 1px; background: #ccd3df; margin: 4px 4px; }
+        .editor-area {
+            border: 2px solid #dde3ef; border-top: none; border-radius: 0 0 14px 14px;
+            padding: 12px 14px; min-height: 70px; font-size: 14px; font-family: Georgia, serif;
+            color: #1a1a2e; line-height: 1.6; background: white; outline: none;
+            overflow: hidden;
+        }
+        .editor-area:focus { border-color: #2d3a8c; }
+        .editor-area:empty:before {
+            content: attr(data-placeholder); color: #b0b8c8; font-style: italic;
+        }
+        .editor-area ul, .editor-area ol { padding-left: 22px; margin: 4px 0; }
+        .editor-area li { margin-bottom: 2px; }
+
+        .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
         .modal-actions .btn { flex: 1; padding: 14px; font-size: 15px; }
 
+        /* FAB */
         .fab {
-            position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px;
-            border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white; border: none; font-size: 28px; font-weight: 300;
-            box-shadow: 0 4px 16px rgba(59,130,246,0.45); cursor: pointer; z-index: 50;
+            position: fixed; bottom: 22px; right: 22px; width: 58px; height: 58px;
+            border-radius: 50%;
+            background: linear-gradient(160deg, #2d3a8c, #1e3a5f);
+            color: white; border: none; font-size: 30px; font-weight: 300;
+            box-shadow: 0 6px 20px rgba(30,58,95,0.4); cursor: pointer; z-index: 50;
             display: flex; align-items: center; justify-content: center;
         }
-        .fab:active { transform: scale(0.92); }
+        .fab:active { transform: scale(0.9); }
 
         @media (min-width: 600px) {
-            .container { padding: 20px; }
-            .modal { border-radius: 20px; margin: auto; max-width: 520px; }
+            .container { padding: 22px; }
+            .modal { border-radius: 22px; margin: auto; max-width: 520px; }
             .modal-overlay.active { align-items: center; }
             @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         }
@@ -198,14 +254,12 @@
             <button class="nav-btn" id="navProjects" onclick="navigate('projects')">Проекты <span class="nav-count" id="navProjectsCount">0</span></button>
         </div>
     </div>
-
     <div class="container">
-        <!-- PAGE: TASKS -->
         <div class="page active" id="pageTasks">
             <div class="stats" id="stats"></div>
             <div class="controls">
                 <input type="text" class="search-box" id="searchBox" placeholder="Поиск..." oninput="renderTasks()">
-                <div class="controls-row">
+                <div class="controls-row" id="activeFilters">
                     <select class="filter-select" id="filterStatus" onchange="renderTasks()">
                         <option value="all">Все активные</option>
                         <option value="new">Новая</option>
@@ -223,17 +277,13 @@
             <div class="backup-info" id="backupInfo"></div>
             <div class="task-list" id="taskList"></div>
         </div>
-
-        <!-- PAGE: COMPLETED -->
         <div class="page" id="pageCompleted">
             <input type="text" class="search-box" id="searchCompleted" placeholder="Поиск по завершённым..." oninput="renderCompleted()" style="margin-bottom:12px;width:100%">
             <div class="task-list" id="completedList"></div>
         </div>
-
-        <!-- PAGE: PROJECTS -->
         <div class="page" id="pageProjects">
             <div id="projectListView">
-                <button class="btn btn-primary" onclick="openProjectModal()" style="width:100%;margin-bottom:12px">+ Новый проект</button>
+                <button class="btn btn-primary" onclick="openProjectModal()" style="width:100%;margin-bottom:14px">+ Новый проект</button>
                 <div class="project-list" id="projectList"></div>
             </div>
             <div id="projectDetailView" style="display:none">
@@ -245,64 +295,44 @@
             </div>
         </div>
     </div>
-
-    <button class="fab" id="fabBtn" onclick="onFabClick()" aria-label="Добавить">+</button>
+    <button class="fab" id="fabBtn" onclick="onFabClick()">+</button>
 
     <!-- Task Modal -->
-    <div class="modal-overlay" id="taskModal" onclick="closeModalOnOverlay(event,'taskModal')">
+    <div class="modal-overlay" id="taskModal" onclick="closeModalOv(event,'taskModal')">
         <div class="modal">
             <div class="modal-handle"></div>
             <h2 id="taskModalTitle">Новая задача</h2>
             <form id="taskForm" onsubmit="saveTask(event)">
                 <input type="hidden" id="taskId">
                 <input type="hidden" id="taskProjectId" value="">
-                <div class="form-group">
-                    <label>Дата поступления *</label>
-                    <input type="date" id="dateReceived" required>
+                <div class="form-group"><label>Дата поступления *</label><input type="date" id="dateReceived" required></div>
+                <div class="form-group"><label>Краткая суть задачи *</label><textarea id="summary" placeholder="Опишите суть задачи..." required oninput="autoGrow(this)"></textarea></div>
+                <div class="form-group"><label>Что требуется дополнительно</label><textarea id="additionalInfo" placeholder="Документы, сведения..." oninput="autoGrow(this)"></textarea></div>
+                <div class="form-group"><label>Дата ответа</label><input type="date" id="responseDate"></div>
+                <div class="form-group"><label>Напоминание</label>
+                    <select id="reminderDays"><option value="0">В день ответа</option><option value="1" selected>За 1 день</option><option value="2">За 2 дня</option><option value="3">За 3 дня</option><option value="7">За неделю</option></select>
                 </div>
-                <div class="form-group">
-                    <label>Краткая суть задачи *</label>
-                    <textarea id="summary" placeholder="Опишите суть задачи..." required></textarea>
+                <div class="form-group"><label>Значимость</label>
+                    <select id="priority"><option value="none">Обычная</option><option value="low">Низкая</option><option value="medium">Средняя</option><option value="high">Высокая</option></select>
                 </div>
-                <div class="form-group">
-                    <label>Что требуется получить дополнительно</label>
-                    <textarea id="additionalInfo" placeholder="Документы, сведения..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Дата предоставления ответа</label>
-                    <input type="date" id="responseDate">
-                </div>
-                <div class="form-group">
-                    <label>Напоминание (за сколько дней до ответа)</label>
-                    <select id="reminderDays">
-                        <option value="0">В день ответа</option>
-                        <option value="1" selected>За 1 день</option>
-                        <option value="2">За 2 дня</option>
-                        <option value="3">За 3 дня</option>
-                        <option value="7">За неделю</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Значимость</label>
-                    <select id="priority">
-                        <option value="none">Обычная</option>
-                        <option value="low">Низкая</option>
-                        <option value="medium">Средняя</option>
-                        <option value="high">Высокая</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Статус</label>
-                    <select id="status">
-                        <option value="new">Новая</option>
-                        <option value="in-progress">В работе</option>
-                        <option value="waiting">Ожидание доп. информации</option>
-                        <option value="completed">Завершена</option>
-                    </select>
+                <div class="form-group"><label>Статус</label>
+                    <select id="status"><option value="new">Новая</option><option value="in-progress">В работе</option><option value="waiting">Ожидание</option><option value="completed">Завершена</option></select>
                 </div>
                 <div class="form-group">
                     <label>Заметки</label>
-                    <textarea id="notes" placeholder="Ваши заметки..."></textarea>
+                    <div class="editor-toolbar" id="editorToolbar">
+                        <button type="button" onclick="execCmd('bold')" title="Жирный"><b>Ж</b></button>
+                        <button type="button" onclick="execCmd('italic')" title="Курсив"><i>К</i></button>
+                        <button type="button" onclick="execCmd('underline')" title="Подчёркнутый"><u>П</u></button>
+                        <div class="sep"></div>
+                        <button type="button" onclick="execCmd('insertUnorderedList')" title="Маркеры">&#8226;</button>
+                        <button type="button" onclick="execCmd('insertOrderedList')" title="Нумерация">1.</button>
+                        <div class="sep"></div>
+                        <button type="button" onclick="setFontSize(2)" title="Мелкий" style="font-size:11px">A</button>
+                        <button type="button" onclick="setFontSize(4)" title="Средний" style="font-size:14px">A</button>
+                        <button type="button" onclick="setFontSize(6)" title="Крупный" style="font-size:18px">A</button>
+                    </div>
+                    <div class="editor-area" id="notesEditor" contenteditable="true" data-placeholder="Ваши заметки..."></div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('taskModal')">Отмена</button>
@@ -313,20 +343,14 @@
     </div>
 
     <!-- Project Modal -->
-    <div class="modal-overlay" id="projectModal" onclick="closeModalOnOverlay(event,'projectModal')">
+    <div class="modal-overlay" id="projectModal" onclick="closeModalOv(event,'projectModal')">
         <div class="modal">
             <div class="modal-handle"></div>
             <h2 id="projectModalTitle">Новый проект</h2>
             <form id="projectForm" onsubmit="saveProject(event)">
                 <input type="hidden" id="projectId">
-                <div class="form-group">
-                    <label>Название проекта *</label>
-                    <input type="text" id="projectName" placeholder="Например: Судебное дело ООО Ромашка" required>
-                </div>
-                <div class="form-group">
-                    <label>Описание</label>
-                    <textarea id="projectDesc" placeholder="Краткое описание проекта..."></textarea>
-                </div>
+                <div class="form-group"><label>Название *</label><input type="text" id="projectName" placeholder="Название проекта" required></div>
+                <div class="form-group"><label>Описание</label><textarea id="projectDesc" placeholder="Описание..." oninput="autoGrow(this)"></textarea></div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('projectModal')">Отмена</button>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -335,499 +359,335 @@
         </div>
     </div>
 
-    <script>
-        // --- DATA ---
-        const DEFAULT_TASKS = [
-            {"dateReceived":"2026-06-17","summary":"Правовой анализ договоров банковского вклада, информации на сайте и в ДБО в части повышенной процентной ставки по вкладу и НС","additionalInfo":"Анализ документов (Сапунова)","responseDate":"2026-06-24","reminderDays":1,"priority":"high","status":"waiting","notes":"","id":1,"createdAt":"2026-06-17T14:52:34.353Z"},
-            {"dateReceived":"2026-06-17","summary":"Задача по вопросу прекращения ДКБО","additionalInfo":"Жду ответы на вопросы","responseDate":"","reminderDays":1,"priority":"none","status":"new","notes":"","id":2,"createdAt":"2026-06-17T14:52:53.287Z"},
-            {"dateReceived":"2026-06-17","summary":"Задача от Бурковой по форме обращения","additionalInfo":"Остудил со Стасом, надо выпустить","responseDate":"2026-06-18","reminderDays":1,"priority":"none","status":"completed","notes":"","id":3,"createdAt":"2026-06-17T14:53:12.145Z"},
-            {"dateReceived":"2026-06-18","summary":"ДВОУ (в режиме сравнения)","additionalInfo":"","responseDate":"","reminderDays":1,"priority":"none","status":"new","notes":"","id":4,"createdAt":"2026-06-18T14:22:40.609Z"}
-        ];
+<script>
+// --- DATA ---
+const DEFAULT_TASKS = [
+    {"dateReceived":"2026-06-17","summary":"Правовой анализ договоров банковского вклада, информации на сайте и в ДБО в части повышенной процентной ставки по вкладу и НС","additionalInfo":"Анализ документов (Сапунова)","responseDate":"2026-06-24","reminderDays":1,"priority":"high","status":"completed","notes":"","id":1,"createdAt":"2026-06-17T14:52:34.353Z","completedAt":"2026-06-18"},
+    {"dateReceived":"2026-06-17","summary":"Задача по вопросу прекращения ДКБО","additionalInfo":"Жду ответы на вопросы","responseDate":"","reminderDays":1,"priority":"none","status":"in-progress","notes":"","id":2,"createdAt":"2026-06-17T14:52:53.287Z"},
+    {"dateReceived":"2026-06-17","summary":"Задача от Бурковой по форме обращения","additionalInfo":"Остудил со Стасом, надо выпустить","responseDate":"2026-06-18","reminderDays":1,"priority":"none","status":"completed","notes":"","id":3,"createdAt":"2026-06-17T14:53:12.145Z"},
+    {"dateReceived":"2026-06-18","summary":"ДВОУ (в режиме сравнения)","additionalInfo":"","responseDate":"","reminderDays":1,"priority":"none","status":"in-progress","notes":"","id":4,"createdAt":"2026-06-18T14:22:40.609Z"}
+];
+const DEFAULT_PROJECTS = [{"name":"Торговый оборот","description":"Правовой анализ договоров банковского вклада, информации на сайте и в ДБО в части повышенной процентной ставки по вкладу и НС","id":1,"createdAt":"2026-06-18T15:08:11.244Z"}];
+const DEFAULT_PT = {"1":[]};
 
-        let tasks = JSON.parse(localStorage.getItem('lawyerTasks') || 'null');
-        if (!tasks) { tasks = DEFAULT_TASKS; saveTasks(); }
+let tasks = JSON.parse(localStorage.getItem('lawyerTasks') || 'null');
+if (!tasks) { tasks = DEFAULT_TASKS; saveTasks(); }
+let projects = JSON.parse(localStorage.getItem('lawyerProjects') || 'null');
+if (!projects) { projects = DEFAULT_PROJECTS; saveProjects(); }
+let projectTasks = JSON.parse(localStorage.getItem('lawyerProjectTasks') || 'null');
+if (!projectTasks) { projectTasks = DEFAULT_PT; saveProjectTasks(); }
 
-        let projects = JSON.parse(localStorage.getItem('lawyerProjects') || '[]');
-        let projectTasks = JSON.parse(localStorage.getItem('lawyerProjectTasks') || '{}');
+let currentPage = 'tasks', currentProjectId = null;
 
-        let currentPage = 'tasks';
-        let currentProjectId = null;
+function saveTasks() { localStorage.setItem('lawyerTasks', JSON.stringify(tasks)); }
+function saveProjects() { localStorage.setItem('lawyerProjects', JSON.stringify(projects)); }
+function saveProjectTasks() { localStorage.setItem('lawyerProjectTasks', JSON.stringify(projectTasks)); }
+function nextId(a) { return (!a||!a.length) ? 1 : Math.max(...a.map(t=>t.id))+1; }
+function fmtDate(d) { if(!d)return'—'; const[y,m,dd]=d.split('-'); return `${dd}.${m}.${y}`; }
+function stLabel(s) { return{'new':'Новая','in-progress':'В работе','waiting':'Ожидание','completed':'Завершена'}[s]||s; }
+function isOverdue(t) { return t.status!=='completed'&&t.responseDate&&new Date(t.responseDate)<new Date(new Date().toISOString().split('T')[0]); }
+function esc(t) { const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-        function saveTasks() { localStorage.setItem('lawyerTasks', JSON.stringify(tasks)); }
-        function saveProjects() { localStorage.setItem('lawyerProjects', JSON.stringify(projects)); }
-        function saveProjectTasks() { localStorage.setItem('lawyerProjectTasks', JSON.stringify(projectTasks)); }
+// --- EDITOR ---
+function execCmd(cmd) { document.execCommand(cmd, false, null); document.getElementById('notesEditor').focus(); }
+function setFontSize(size) { document.execCommand('fontSize', false, size); document.getElementById('notesEditor').focus(); }
+function autoGrow(el) { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
 
-        function nextId(arr) {
-            if (!arr || arr.length === 0) return 1;
-            return Math.max(...arr.map(t => t.id)) + 1;
-        }
+// --- NAV ---
+function navigate(p) {
+    currentPage=p;
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+    document.getElementById('page'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
+    document.getElementById('nav'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
+    document.getElementById('fabBtn').style.display=(p==='completed')?'none':'flex';
+    if(p==='tasks')renderTasks(); else if(p==='completed')renderCompleted(); else{closeProjectDetail();renderProjects();}
+}
+function updateNav() {
+    document.getElementById('navTasksCount').textContent=tasks.filter(t=>t.status!=='completed').length;
+    document.getElementById('navCompletedCount').textContent=tasks.filter(t=>t.status==='completed').length;
+    document.getElementById('navProjectsCount').textContent=projects.length;
+}
 
-        function formatDate(d) {
-            if (!d) return '—';
-            const [y,m,dd] = d.split('-');
-            return `${dd}.${m}.${y}`;
-        }
-        function statusLabel(s) {
-            return {'new':'Новая','in-progress':'В работе','waiting':'Ожидание','completed':'Завершена'}[s] || s;
-        }
-        function isOverdue(t) {
-            if (t.status === 'completed' || !t.responseDate) return false;
-            return new Date(t.responseDate) < new Date(new Date().toISOString().split('T')[0]);
-        }
-        function esc(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+// --- RENDER ---
+function updateStats() {
+    const a=tasks.filter(t=>t.status!=='completed').length, o=tasks.filter(t=>isOverdue(t)).length, c=tasks.filter(t=>t.status==='completed').length;
+    document.getElementById('stats').innerHTML=`
+        <div class="stat-card"><div class="label">В работе</div><div class="value">${a}</div></div>
+        <div class="stat-card ${o?'overdue':''}"><div class="label">Просрочено</div><div class="value">${o}</div></div>
+        <div class="stat-card"><div class="label">Завершено</div><div class="value">${c}</div></div>`;
+}
 
-        // --- NAVIGATION ---
-        function navigate(page) {
-            currentPage = page;
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('page' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add('active');
-            document.getElementById('nav' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add('active');
-            document.getElementById('fabBtn').style.display = (page === 'completed') ? 'none' : 'flex';
-            if (page === 'tasks') renderTasks();
-            else if (page === 'completed') renderCompleted();
-            else if (page === 'projects') { closeProjectDetail(); renderProjects(); }
-        }
+function getFiltered(list, sId, fId, active) {
+    const s=document.getElementById(sId)?document.getElementById(sId).value.toLowerCase():'';
+    const f=fId&&document.getElementById(fId)?document.getElementById(fId).value:'all';
+    let r=list.filter(t=>{
+        if(active&&t.status==='completed')return false;
+        if(!active&&t.status!=='completed')return false;
+        const ms=!s||t.summary.toLowerCase().includes(s)||(t.additionalInfo&&t.additionalInfo.toLowerCase().includes(s))||(t.notes&&t.notes.toLowerCase().includes(s))||String(t.id).includes(s);
+        const mf=!fId||f==='all'||t.status===f;
+        return ms&&mf;
+    });
+    const pw={high:3,medium:2,low:1,none:0};
+    if(active) r.sort((a,b)=>(pw[b.priority||'none']||0)-(pw[a.priority||'none']||0)||(b.id-a.id));
+    else r.sort((a,b)=>b.id-a.id);
+    return r;
+}
 
-        function updateNavCounts() {
-            document.getElementById('navTasksCount').textContent = tasks.filter(t => t.status !== 'completed').length;
-            document.getElementById('navCompletedCount').textContent = tasks.filter(t => t.status === 'completed').length;
-            document.getElementById('navProjectsCount').textContent = projects.length;
-        }
+function cardHtml(t, done, pid) {
+    const pri=t.priority||'none';
+    let cls=done?'completed':isOverdue(t)?'overdue':'';
+    if(!done&&(pri==='high'||pri==='medium'))cls+=' priority-'+pri+'-card';
+    const dc=isOverdue(t)?'overdue-date':'';
+    const plbl={high:'Высокая',medium:'Средняя',low:'Низкая'};
+    const priH=pri!=='none'?`<span class="priority-badge priority-${pri}">${plbl[pri]}</span>`:'';
+    const notesH=t.notes?`<div class="task-notes"><div class="task-notes-label">Заметки</div><div class="task-notes-text">${t.notes}</div></div>`:'';
+    const addH=t.additionalInfo?`<div class="task-detail"><span class="task-detail-label">Доп. инфо:</span><span class="task-detail-value">${esc(t.additionalInfo)}</span></div>`:'';
+    const cdH=t.completedAt?`<div class="completed-date">Завершена: ${fmtDate(t.completedAt)}</div>`:'';
+    const pa=pid?`,${pid}`:'';
+    let acts;
+    if(done){
+        acts=`<div class="task-actions"><button class="btn btn-reopen" onclick="reopenTask(${t.id}${pa})">В работу</button><button class="btn btn-danger" onclick="deleteTask(${t.id}${pa})">Удалить</button></div>`;
+    } else {
+        const cal=t.responseDate?`<button class="btn btn-calendar" onclick="addToCalendar(${t.id}${pa})">Календарь</button>`:'';
+        acts=`<div class="task-actions"><button class="btn btn-secondary" onclick="editTask(${t.id}${pa})">Изменить</button><button class="btn btn-success" onclick="completeTask(${t.id}${pa})">Готово</button>${cal}<button class="btn btn-danger" onclick="deleteTask(${t.id}${pa})">Удалить</button></div>`;
+    }
+    return `<div class="task-card ${cls}">
+        <div class="task-card-header"><span class="task-number">#${t.id}${priH}</span><span class="status-badge status-${t.status}">${stLabel(t.status)}</span></div>
+        <div class="task-summary">${esc(t.summary)}</div>
+        <div class="task-details">
+            <div class="task-detail"><span class="task-detail-label">Поступила:</span><span class="task-detail-value">${fmtDate(t.dateReceived)}</span></div>
+            ${addH}
+            <div class="task-detail"><span class="task-detail-label">Ответ до:</span><span class="task-detail-value ${dc}">${fmtDate(t.responseDate)}</span></div>
+        </div>${notesH}${cdH}${acts}</div>`;
+}
 
-        // --- TASKS PAGE ---
-        function updateStats() {
-            const a = tasks.filter(t => t.status !== 'completed').length;
-            const o = tasks.filter(t => isOverdue(t)).length;
-            const c = tasks.filter(t => t.status === 'completed').length;
-            document.getElementById('stats').innerHTML = `
-                <div class="stat-card"><div class="label">В работе</div><div class="value">${a}</div></div>
-                <div class="stat-card ${o>0?'overdue':''}"><div class="label">Просрочено</div><div class="value">${o}</div></div>
-                <div class="stat-card"><div class="label">Завершено</div><div class="value">${c}</div></div>`;
-        }
+function renderTasks() {
+    updateStats(); updateNav();
+    const f=getFiltered(tasks,'searchBox','filterStatus',true), el=document.getElementById('taskList');
+    el.innerHTML=f.length?f.map(t=>cardHtml(t,false)).join(''):'<div class="empty-state"><div class="empty-state-icon">&#128221;</div><p>Нет активных задач</p><p class="sub">Нажмите + чтобы добавить</p></div>';
+    updateBackupInfo();
+}
+function renderCompleted() {
+    updateNav();
+    const f=getFiltered(tasks,'searchCompleted',null,false), el=document.getElementById('completedList');
+    el.innerHTML=f.length?f.map(t=>cardHtml(t,true)).join(''):'<div class="empty-state"><div class="empty-state-icon">&#9989;</div><p>Нет завершённых задач</p><p class="sub">Завершённые задачи появятся здесь</p></div>';
+}
 
-        function getFiltered(list, searchId, filterId, onlyActive) {
-            const s = document.getElementById(searchId) ? document.getElementById(searchId).value.toLowerCase() : '';
-            const f = filterId && document.getElementById(filterId) ? document.getElementById(filterId).value : 'all';
-            let r = list.filter(t => {
-                if (onlyActive && t.status === 'completed') return false;
-                if (!onlyActive && t.status !== 'completed') return false;
-                const ms = !s || t.summary.toLowerCase().includes(s) ||
-                    (t.additionalInfo && t.additionalInfo.toLowerCase().includes(s)) ||
-                    (t.notes && t.notes.toLowerCase().includes(s)) || String(t.id).includes(s);
-                const mf = !filterId || f === 'all' || t.status === f;
-                return ms && mf;
-            });
-            const pw = {high:3,medium:2,low:1,none:0};
-            if (onlyActive) {
-                r.sort((a,b) => {
-                    const pa = pw[a.priority||'none']||0, pb = pw[b.priority||'none']||0;
-                    if (pa !== pb) return pb - pa;
-                    return (b.id||0) - (a.id||0);
-                });
-            } else {
-                r.sort((a,b) => (b.id||0) - (a.id||0));
-            }
-            return r;
-        }
+// --- TASK ACTIONS ---
+function getList(pid) { return pid?projectTasks[pid]||[]:tasks; }
+function setList(pid,l) { if(pid){projectTasks[pid]=l;saveProjectTasks();}else{tasks=l;saveTasks();} }
 
-        function renderTaskCard(task, isCompleted, projectId) {
-            const pri = task.priority || 'none';
-            let cls = isCompleted ? 'completed' : isOverdue(task) ? 'overdue' : '';
-            if (!isCompleted && (pri==='high'||pri==='medium')) cls += ' priority-'+pri+'-card';
-            const dc = isOverdue(task) ? 'overdue-date' : '';
-            const priLabels = {high:'Высокая',medium:'Средняя',low:'Низкая'};
-            const priH = pri!=='none' ? `<span class="priority-badge priority-${pri}">${priLabels[pri]}</span>` : '';
-            const notesH = task.notes ? `<div class="task-notes"><div class="task-notes-label">Заметки</div><div class="task-notes-text">${esc(task.notes)}</div></div>` : '';
-            const addH = task.additionalInfo ? `<div class="task-detail"><span class="task-detail-label">Доп. инфо:</span><span class="task-detail-value">${esc(task.additionalInfo)}</span></div>` : '';
-            const cdH = task.completedAt ? `<div class="completed-date">Завершена: ${formatDate(task.completedAt)}</div>` : '';
-            const pArg = projectId ? `,${projectId}` : '';
+function openTaskModal(pid) {
+    document.getElementById('taskModalTitle').textContent='Новая задача';
+    document.getElementById('taskForm').reset();
+    document.getElementById('taskId').value='';
+    document.getElementById('taskProjectId').value=pid||'';
+    document.getElementById('dateReceived').value=new Date().toISOString().split('T')[0];
+    document.getElementById('notesEditor').innerHTML='';
+    document.querySelectorAll('#taskForm textarea').forEach(t=>{t.style.height='auto';});
+    document.getElementById('taskModal').classList.add('active');
+}
+function editTask(id,pid) {
+    const l=getList(pid), t=l.find(x=>x.id===id); if(!t)return;
+    document.getElementById('taskModalTitle').textContent='Редактировать #'+t.id;
+    document.getElementById('taskId').value=t.id;
+    document.getElementById('taskProjectId').value=pid||'';
+    document.getElementById('dateReceived').value=t.dateReceived;
+    document.getElementById('summary').value=t.summary;
+    document.getElementById('additionalInfo').value=t.additionalInfo||'';
+    document.getElementById('responseDate').value=t.responseDate||'';
+    document.getElementById('reminderDays').value=t.reminderDays!=null?t.reminderDays:1;
+    document.getElementById('priority').value=t.priority||'none';
+    document.getElementById('status').value=t.status;
+    document.getElementById('notesEditor').innerHTML=t.notes||'';
+    document.querySelectorAll('#taskForm textarea').forEach(el=>{el.style.height='auto';el.style.height=el.scrollHeight+'px';});
+    document.getElementById('taskModal').classList.add('active');
+}
+function saveTask(e) {
+    e.preventDefault();
+    const id=document.getElementById('taskId').value;
+    const pid=document.getElementById('taskProjectId').value||null;
+    const list=getList(pid);
+    const ns=document.getElementById('status').value;
+    const d={
+        dateReceived:document.getElementById('dateReceived').value,
+        summary:document.getElementById('summary').value.trim(),
+        additionalInfo:document.getElementById('additionalInfo').value.trim(),
+        responseDate:document.getElementById('responseDate').value,
+        reminderDays:parseInt(document.getElementById('reminderDays').value)||0,
+        priority:document.getElementById('priority').value,
+        status:ns,
+        notes:document.getElementById('notesEditor').innerHTML.trim()
+    };
+    if(ns==='completed')d.completedAt=new Date().toISOString().split('T')[0];
+    if(id){const i=list.findIndex(x=>x.id===Number(id));if(i!==-1)list[i]={...list[i],...d};}
+    else{d.id=nextId(list);d.createdAt=new Date().toISOString();list.push(d);}
+    setList(pid,list); closeModal('taskModal'); refreshView();
+}
+function completeTask(id,pid) {
+    const l=getList(pid),t=l.find(x=>x.id===id); if(!t)return;
+    t.status='completed'; t.completedAt=new Date().toISOString().split('T')[0];
+    if(!t.responseDate)t.responseDate=t.completedAt;
+    setList(pid,l); refreshView();
+}
+function reopenTask(id,pid) {
+    const l=getList(pid),t=l.find(x=>x.id===id); if(!t)return;
+    t.status='in-progress'; delete t.completedAt;
+    setList(pid,l); refreshView();
+}
+function deleteTask(id,pid) {
+    if(!confirm('Удалить задачу #'+id+'?'))return;
+    setList(pid,getList(pid).filter(x=>x.id!==id)); refreshView();
+}
 
-            let acts;
-            if (isCompleted) {
-                acts = `<div class="task-actions">
-                    <button class="btn btn-reopen" onclick="reopenTask(${task.id}${pArg})">В работу</button>
-                    <button class="btn btn-danger" onclick="deleteTask(${task.id}${pArg})">Удалить</button>
-                </div>`;
-            } else {
-                const calBtn = task.responseDate ? `<button class="btn btn-calendar" onclick="addToCalendar(${task.id}${pArg})">Календарь</button>` : '';
-                acts = `<div class="task-actions">
-                    <button class="btn btn-secondary" onclick="editTask(${task.id}${pArg})">Изменить</button>
-                    <button class="btn btn-success" onclick="completeTask(${task.id}${pArg})">Готово</button>
-                    ${calBtn}
-                    <button class="btn btn-danger" onclick="deleteTask(${task.id}${pArg})">Удалить</button>
-                </div>`;
-            }
-            return `<div class="task-card ${cls}">
-                <div class="task-card-header">
-                    <span class="task-number">#${task.id}${priH}</span>
-                    <span class="status-badge status-${task.status}">${statusLabel(task.status)}</span>
-                </div>
-                <div class="task-summary">${esc(task.summary)}</div>
-                <div class="task-details">
-                    <div class="task-detail"><span class="task-detail-label">Поступила:</span><span class="task-detail-value">${formatDate(task.dateReceived)}</span></div>
-                    ${addH}
-                    <div class="task-detail"><span class="task-detail-label">Ответ до:</span><span class="task-detail-value ${dc}">${formatDate(task.responseDate)}</span></div>
-                </div>
-                ${notesH}${cdH}${acts}
-            </div>`;
-        }
+// --- CALENDAR ---
+function addToCalendar(id,pid) {
+    const t=(getList(pid)).find(x=>x.id===id); if(!t||!t.responseDate)return;
+    const dt=t.responseDate.replace(/-/g,'');
+    const nd=new Date(t.responseDate); nd.setDate(nd.getDate()+1);
+    const ed=nd.toISOString().split('T')[0].replace(/-/g,'');
+    const rm=(t.reminderDays||0)*24*60;
+    const pl={high:'ВЫСОКАЯ',medium:'СРЕДНЯЯ',low:'НИЗКАЯ'};
+    const pt=t.priority&&t.priority!=='none'?' ['+pl[t.priority]+']':'';
+    let desc=t.summary;
+    if(t.additionalInfo)desc+='\\nДоп.: '+t.additionalInfo;
+    const plainNotes=t.notes?t.notes.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' '):'';
+    if(plainNotes)desc+='\\nЗаметки: '+plainNotes;
+    desc=desc.replace(/\n/g,'\\n');
+    const escI=s=>s.replace(/[\\;,]/g,c=>'\\'+c);
+    const uid='task-'+t.id+'-'+Date.now()+'@lawyer-tasks';
+    const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Lawyer Tasks//RU','CALSCALE:GREGORIAN',
+        'BEGIN:VEVENT','UID:'+uid,'DTSTART;VALUE=DATE:'+dt,'DTEND;VALUE=DATE:'+ed,
+        'SUMMARY:'+escI(t.summary+pt),'DESCRIPTION:'+escI(desc),
+        'BEGIN:VALARM','TRIGGER:-PT'+rm+'M','ACTION:DISPLAY','DESCRIPTION:Задача #'+t.id,'END:VALARM',
+        'END:VEVENT','END:VCALENDAR'];
+    const blob=new Blob([ics.join('\r\n')],{type:'text/calendar;charset=utf-8'});
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='task_'+t.id+'.ics'; a.click(); URL.revokeObjectURL(url);
+}
 
-        function renderTasks() {
-            updateStats(); updateNavCounts();
-            const f = getFiltered(tasks, 'searchBox', 'filterStatus', true);
-            const el = document.getElementById('taskList');
-            if (f.length === 0) {
-                el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">&#128221;</div><p>Нет активных задач</p><p class="sub">Нажмите + чтобы добавить</p></div>`;
-            } else {
-                el.innerHTML = f.map(t => renderTaskCard(t, false)).join('');
-            }
-            updateBackupInfo();
-        }
+// --- PROJECTS ---
+function renderProjects() {
+    updateNav();
+    const el=document.getElementById('projectList');
+    if(!projects.length){el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128194;</div><p>Нет проектов</p><p class="sub">Создайте первый проект</p></div>';return;}
+    el.innerHTML=projects.map(p=>{
+        const pts=projectTasks[p.id]||[]; const ac=pts.filter(t=>t.status!=='completed').length;
+        return `<div class="project-card" onclick="openProjectDetail(${p.id})">
+            <div class="project-card-header"><span class="project-name">${esc(p.name)}</span><span class="project-count">${ac} акт.</span></div>
+            ${p.description?`<div class="project-desc">${esc(p.description)}</div>`:''}
+            <div class="project-actions" onclick="event.stopPropagation()">
+                <button class="btn btn-secondary" onclick="editProject(${p.id})">Изменить</button>
+                <button class="btn btn-danger" onclick="deleteProject(${p.id})">Удалить</button>
+            </div></div>`;
+    }).join('');
+}
+function openProjectModal(id) {
+    document.getElementById('projectForm').reset(); document.getElementById('projectId').value='';
+    document.getElementById('projectModalTitle').textContent='Новый проект';
+    if(id){const p=projects.find(x=>x.id===id);if(p){document.getElementById('projectModalTitle').textContent='Редактировать';document.getElementById('projectId').value=p.id;document.getElementById('projectName').value=p.name;document.getElementById('projectDesc').value=p.description||'';}}
+    document.getElementById('projectModal').classList.add('active');
+}
+function editProject(id){openProjectModal(id);}
+function saveProject(e) {
+    e.preventDefault(); const id=document.getElementById('projectId').value;
+    const d={name:document.getElementById('projectName').value.trim(),description:document.getElementById('projectDesc').value.trim()};
+    if(id){const p=projects.find(x=>x.id===Number(id));if(p){p.name=d.name;p.description=d.description;}}
+    else{d.id=projects.length?Math.max(...projects.map(x=>x.id))+1:1;d.createdAt=new Date().toISOString();projects.push(d);if(!projectTasks[d.id])projectTasks[d.id]=[];saveProjectTasks();}
+    saveProjects(); closeModal('projectModal'); renderProjects();
+}
+function deleteProject(id) {
+    const p=projects.find(x=>x.id===id);if(!p)return;
+    const tc=(projectTasks[id]||[]).length;
+    if(!confirm('Удалить проект "'+p.name+'"'+(tc?' и '+tc+' задач':'')+'?'))return;
+    projects=projects.filter(x=>x.id!==id); delete projectTasks[id];
+    saveProjects(); saveProjectTasks(); renderProjects();
+}
+function openProjectDetail(id) {
+    currentProjectId=id; const p=projects.find(x=>x.id===id);if(!p)return;
+    document.getElementById('projectDetailTitle').textContent=p.name;
+    document.getElementById('projectListView').style.display='none';
+    document.getElementById('projectDetailView').style.display='block';
+    renderProjectTasks();
+}
+function closeProjectDetail() { currentProjectId=null; document.getElementById('projectListView').style.display='block'; document.getElementById('projectDetailView').style.display='none'; renderProjects(); }
+function renderProjectTasks() {
+    if(!currentProjectId)return;
+    const list=projectTasks[currentProjectId]||[], el=document.getElementById('projectTaskList');
+    const active=list.filter(t=>t.status!=='completed'), done=list.filter(t=>t.status==='completed');
+    const pw={high:3,medium:2,low:1,none:0};
+    active.sort((a,b)=>(pw[b.priority||'none']||0)-(pw[a.priority||'none']||0)||b.id-a.id);
+    done.sort((a,b)=>b.id-a.id);
+    let h='';
+    if(!active.length&&!done.length) h='<div class="empty-state"><div class="empty-state-icon">&#128221;</div><p>Нет задач</p><p class="sub">Нажмите + чтобы добавить</p></div>';
+    else {
+        h=active.map(t=>cardHtml(t,false,currentProjectId)).join('');
+        if(done.length) h+=`<div style="margin:18px 0 10px;font-size:11px;font-weight:700;color:#99a3b3;text-transform:uppercase;letter-spacing:0.5px">Завершённые (${done.length})</div>`+done.map(t=>cardHtml(t,true,currentProjectId)).join('');
+    }
+    el.innerHTML=h;
+}
 
-        function renderCompleted() {
-            updateNavCounts();
-            const f = getFiltered(tasks, 'searchCompleted', null, false);
-            const el = document.getElementById('completedList');
-            if (f.length === 0) {
-                el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">&#9989;</div><p>Нет завершённых задач</p><p class="sub">Завершённые задачи появятся здесь</p></div>`;
-            } else {
-                el.innerHTML = f.map(t => renderTaskCard(t, true)).join('');
-            }
-        }
+// --- COMMON ---
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function closeModalOv(e,id){if(e.target===e.currentTarget)closeModal(id);}
+function onFabClick() {
+    if(currentPage==='tasks')openTaskModal();
+    else if(currentPage==='projects'){if(currentProjectId)openTaskModal(currentProjectId);else openProjectModal();}
+}
+function refreshView() {
+    if(currentPage==='tasks')renderTasks(); else if(currentPage==='completed')renderCompleted();
+    else if(currentPage==='projects'){if(currentProjectId)renderProjectTasks();else renderProjects();}
+}
 
-        // --- TASK ACTIONS ---
-        function getTaskList(projectId) {
-            if (projectId) return projectTasks[projectId] || [];
-            return tasks;
-        }
-        function setTaskList(projectId, list) {
-            if (projectId) { projectTasks[projectId] = list; saveProjectTasks(); }
-            else { tasks = list; saveTasks(); }
-        }
+// --- BACKUP (saves everything) ---
+function backupData() {
+    const data={version:2,exportDate:new Date().toISOString(),tasks,projects,projectTasks};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;
+    a.download='tasks_backup_'+new Date().toISOString().split('T')[0]+'.json'; a.click(); URL.revokeObjectURL(url);
+    localStorage.setItem('lastBackupDate',new Date().toISOString()); updateBackupInfo();
+}
+function restoreData(event) {
+    const file=event.target.files[0]; if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        try{
+            const data=JSON.parse(e.target.result);
+            let rt=[];
+            if(data.tasks&&Array.isArray(data.tasks))rt=data.tasks; else if(Array.isArray(data))rt=data;
+            else{alert('Неверный формат');return;}
+            if(tasks.length>0&&!confirm('Заменить '+tasks.length+' задач на '+rt.length+' из файла?')){
+                const mx=tasks.length?Math.max(...tasks.map(t=>t.id)):0;
+                rt.forEach((t,i)=>{t.id=mx+i+1;}); tasks=tasks.concat(rt);
+            } else tasks=rt;
+            if(data.projects){projects=data.projects;saveProjects();}
+            if(data.projectTasks){projectTasks=data.projectTasks;saveProjectTasks();}
+            saveTasks(); refreshView(); alert('Восстановлено: '+rt.length+' задач');
+        }catch(err){alert('Ошибка чтения файла');}
+    };
+    reader.readAsText(file); event.target.value='';
+}
+function updateBackupInfo() {
+    const lb=localStorage.getItem('lastBackupDate'), el=document.getElementById('backupInfo');
+    if(!tasks.length){el.textContent='';return;}
+    if(lb){const days=Math.floor((new Date()-new Date(lb))/864e5);el.textContent='Последняя копия: '+fmtDate(new Date(lb).toISOString().split('T')[0])+(days>=3?' — сохраните новую!':'');}
+    else el.textContent='Сохраните резервную копию!';
+}
+function exportCSV() {
+    if(!tasks.length){alert('Нет задач');return;}
+    const pl={high:'Высокая',medium:'Средняя',low:'Низкая',none:'Обычная'};
+    const h=['№','Дата поступления','Суть','Доп. инфо','Дата ответа','Значимость','Статус','Заметки'];
+    const r=tasks.map(t=>[t.id,fmtDate(t.dateReceived),'"'+(t.summary||'').replace(/"/g,'""')+'"',
+        '"'+(t.additionalInfo||'').replace(/"/g,'""')+'"',fmtDate(t.responseDate),pl[t.priority||'none'],stLabel(t.status),
+        '"'+((t.notes||'').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ')).replace(/"/g,'""')+'"']);
+    const csv='﻿'+[h.join(';'),...r.map(x=>x.join(';'))].join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;
+    a.download='tasks_'+new Date().toISOString().split('T')[0]+'.csv'; a.click(); URL.revokeObjectURL(url);
+}
 
-        function openTaskModal(projectId) {
-            document.getElementById('taskModalTitle').textContent = 'Новая задача';
-            document.getElementById('taskForm').reset();
-            document.getElementById('taskId').value = '';
-            document.getElementById('taskProjectId').value = projectId || '';
-            document.getElementById('dateReceived').value = new Date().toISOString().split('T')[0];
-            document.getElementById('taskModal').classList.add('active');
-        }
-
-        function editTask(id, projectId) {
-            const list = getTaskList(projectId);
-            const t = list.find(x => x.id === id);
-            if (!t) return;
-            document.getElementById('taskModalTitle').textContent = 'Редактировать #' + t.id;
-            document.getElementById('taskId').value = t.id;
-            document.getElementById('taskProjectId').value = projectId || '';
-            document.getElementById('dateReceived').value = t.dateReceived;
-            document.getElementById('summary').value = t.summary;
-            document.getElementById('additionalInfo').value = t.additionalInfo || '';
-            document.getElementById('responseDate').value = t.responseDate || '';
-            document.getElementById('reminderDays').value = t.reminderDays != null ? t.reminderDays : 1;
-            document.getElementById('priority').value = t.priority || 'none';
-            document.getElementById('status').value = t.status;
-            document.getElementById('notes').value = t.notes || '';
-            document.getElementById('taskModal').classList.add('active');
-        }
-
-        function saveTask(e) {
-            e.preventDefault();
-            const id = document.getElementById('taskId').value;
-            const pid = document.getElementById('taskProjectId').value || null;
-            const list = getTaskList(pid);
-            const d = {
-                dateReceived: document.getElementById('dateReceived').value,
-                summary: document.getElementById('summary').value.trim(),
-                additionalInfo: document.getElementById('additionalInfo').value.trim(),
-                responseDate: document.getElementById('responseDate').value,
-                reminderDays: parseInt(document.getElementById('reminderDays').value) || 0,
-                priority: document.getElementById('priority').value,
-                status: document.getElementById('status').value,
-                notes: document.getElementById('notes').value.trim()
-            };
-            if (d.status === 'completed') d.completedAt = new Date().toISOString().split('T')[0];
-
-            if (id) {
-                const idx = list.findIndex(x => x.id === Number(id));
-                if (idx !== -1) list[idx] = { ...list[idx], ...d };
-            } else {
-                d.id = nextId(list);
-                d.createdAt = new Date().toISOString();
-                list.push(d);
-            }
-            setTaskList(pid, list);
-            closeModal('taskModal');
-            refreshCurrentView();
-        }
-
-        function completeTask(id, projectId) {
-            const list = getTaskList(projectId);
-            const t = list.find(x => x.id === id);
-            if (!t) return;
-            t.status = 'completed';
-            t.completedAt = new Date().toISOString().split('T')[0];
-            if (!t.responseDate) t.responseDate = t.completedAt;
-            setTaskList(projectId, list);
-            refreshCurrentView();
-        }
-
-        function reopenTask(id, projectId) {
-            const list = getTaskList(projectId);
-            const t = list.find(x => x.id === id);
-            if (!t) return;
-            t.status = 'in-progress';
-            delete t.completedAt;
-            setTaskList(projectId, list);
-            refreshCurrentView();
-        }
-
-        function deleteTask(id, projectId) {
-            if (!confirm('Удалить задачу #' + id + '?')) return;
-            const list = getTaskList(projectId).filter(x => x.id !== id);
-            setTaskList(projectId, list);
-            refreshCurrentView();
-        }
-
-        // --- CALENDAR ---
-        function addToCalendar(id, projectId) {
-            const list = getTaskList(projectId);
-            const t = list.find(x => x.id === id);
-            if (!t || !t.responseDate) return;
-            const date = t.responseDate.replace(/-/g, '');
-            const nd = new Date(t.responseDate); nd.setDate(nd.getDate()+1);
-            const ed = nd.toISOString().split('T')[0].replace(/-/g,'');
-            const rm = (t.reminderDays||0)*24*60;
-            const plbl = {high:'ВЫСОКАЯ',medium:'СРЕДНЯЯ',low:'НИЗКАЯ'};
-            const pt = t.priority&&t.priority!=='none' ? ` [${plbl[t.priority]}]` : '';
-            let desc = t.summary;
-            if (t.additionalInfo) desc += '\\nДоп. информация: ' + t.additionalInfo;
-            if (t.notes) desc += '\\nЗаметки: ' + t.notes;
-            desc = desc.replace(/\n/g, '\\n');
-            const uid = 'task-'+t.id+'-'+Date.now()+'@lawyer-tasks';
-            const escI = s => s.replace(/[\\;,]/g, c => '\\'+c);
-            let ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Lawyer Tasks//RU','CALSCALE:GREGORIAN',
-                'BEGIN:VEVENT','UID:'+uid,'DTSTART;VALUE=DATE:'+date,'DTEND;VALUE=DATE:'+ed,
-                'SUMMARY:'+escI(t.summary+pt),'DESCRIPTION:'+escI(desc),
-                'BEGIN:VALARM','TRIGGER:-PT'+rm+'M','ACTION:DISPLAY',
-                'DESCRIPTION:Срок ответа по задаче #'+t.id,'END:VALARM',
-                'END:VEVENT','END:VCALENDAR'];
-            const blob = new Blob([ics.join('\r\n')], {type:'text/calendar;charset=utf-8'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url; a.download='task_'+t.id+'.ics'; a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // --- PROJECTS ---
-        function renderProjects() {
-            updateNavCounts();
-            const el = document.getElementById('projectList');
-            if (projects.length === 0) {
-                el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">&#128194;</div><p>Нет проектов</p><p class="sub">Создайте первый проект</p></div>`;
-                return;
-            }
-            el.innerHTML = projects.map(p => {
-                const pts = projectTasks[p.id] || [];
-                const active = pts.filter(t => t.status !== 'completed').length;
-                return `<div class="project-card" onclick="openProjectDetail(${p.id})">
-                    <div class="project-card-header">
-                        <span class="project-name">${esc(p.name)}</span>
-                        <span class="project-count">${active} акт.</span>
-                    </div>
-                    ${p.description ? `<div class="project-desc">${esc(p.description)}</div>` : ''}
-                    <div class="project-actions" onclick="event.stopPropagation()">
-                        <button class="btn btn-secondary" onclick="editProject(${p.id})">Изменить</button>
-                        <button class="btn btn-danger" onclick="deleteProject(${p.id})">Удалить</button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function openProjectModal(id) {
-            document.getElementById('projectForm').reset();
-            document.getElementById('projectId').value = '';
-            document.getElementById('projectModalTitle').textContent = 'Новый проект';
-            if (id) {
-                const p = projects.find(x => x.id === id);
-                if (p) {
-                    document.getElementById('projectModalTitle').textContent = 'Редактировать проект';
-                    document.getElementById('projectId').value = p.id;
-                    document.getElementById('projectName').value = p.name;
-                    document.getElementById('projectDesc').value = p.description || '';
-                }
-            }
-            document.getElementById('projectModal').classList.add('active');
-        }
-
-        function editProject(id) { openProjectModal(id); }
-
-        function saveProject(e) {
-            e.preventDefault();
-            const id = document.getElementById('projectId').value;
-            const d = {
-                name: document.getElementById('projectName').value.trim(),
-                description: document.getElementById('projectDesc').value.trim()
-            };
-            if (id) {
-                const p = projects.find(x => x.id === Number(id));
-                if (p) { p.name = d.name; p.description = d.description; }
-            } else {
-                d.id = projects.length ? Math.max(...projects.map(x=>x.id))+1 : 1;
-                d.createdAt = new Date().toISOString();
-                projects.push(d);
-                if (!projectTasks[d.id]) projectTasks[d.id] = [];
-                saveProjectTasks();
-            }
-            saveProjects();
-            closeModal('projectModal');
-            renderProjects();
-        }
-
-        function deleteProject(id) {
-            const p = projects.find(x => x.id === id);
-            if (!p) return;
-            const tc = (projectTasks[id]||[]).length;
-            const msg = tc > 0 ? `Удалить проект "${p.name}" и ${tc} задач в нём?` : `Удалить проект "${p.name}"?`;
-            if (!confirm(msg)) return;
-            projects = projects.filter(x => x.id !== id);
-            delete projectTasks[id];
-            saveProjects(); saveProjectTasks();
-            renderProjects();
-        }
-
-        function openProjectDetail(id) {
-            currentProjectId = id;
-            const p = projects.find(x => x.id === id);
-            if (!p) return;
-            document.getElementById('projectDetailTitle').textContent = p.name;
-            document.getElementById('projectListView').style.display = 'none';
-            document.getElementById('projectDetailView').style.display = 'block';
-            renderProjectTasks();
-        }
-
-        function closeProjectDetail() {
-            currentProjectId = null;
-            document.getElementById('projectListView').style.display = 'block';
-            document.getElementById('projectDetailView').style.display = 'none';
-            renderProjects();
-        }
-
-        function renderProjectTasks() {
-            if (!currentProjectId) return;
-            const list = projectTasks[currentProjectId] || [];
-            const el = document.getElementById('projectTaskList');
-            const active = list.filter(t => t.status !== 'completed');
-            const done = list.filter(t => t.status === 'completed');
-            const pw = {high:3,medium:2,low:1,none:0};
-            active.sort((a,b) => (pw[b.priority||'none']||0)-(pw[a.priority||'none']||0) || b.id-a.id);
-            done.sort((a,b) => b.id - a.id);
-
-            let html = '';
-            if (active.length === 0 && done.length === 0) {
-                html = `<div class="empty-state"><div class="empty-state-icon">&#128221;</div><p>Нет задач в проекте</p><p class="sub">Нажмите + чтобы добавить</p></div>`;
-            } else {
-                html = active.map(t => renderTaskCard(t, false, currentProjectId)).join('');
-                if (done.length > 0) {
-                    html += `<div style="margin:16px 0 8px;font-size:13px;font-weight:600;color:#94a3b8;text-transform:uppercase">Завершённые (${done.length})</div>`;
-                    html += done.map(t => renderTaskCard(t, true, currentProjectId)).join('');
-                }
-            }
-            el.innerHTML = html;
-        }
-
-        // --- COMMON ---
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function closeModalOnOverlay(e, id) { if (e.target === e.currentTarget) closeModal(id); }
-
-        function onFabClick() {
-            if (currentPage === 'tasks') openTaskModal();
-            else if (currentPage === 'projects') {
-                if (currentProjectId) openTaskModal(currentProjectId);
-                else openProjectModal();
-            }
-        }
-
-        function refreshCurrentView() {
-            if (currentPage === 'tasks') renderTasks();
-            else if (currentPage === 'completed') renderCompleted();
-            else if (currentPage === 'projects') {
-                if (currentProjectId) renderProjectTasks();
-                else renderProjects();
-            }
-        }
-
-        // --- BACKUP ---
-        function backupData() {
-            const data = { version: 2, exportDate: new Date().toISOString(), tasks, projects, projectTasks };
-            const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url;
-            a.download = 'tasks_backup_' + new Date().toISOString().split('T')[0] + '.json';
-            a.click(); URL.revokeObjectURL(url);
-            localStorage.setItem('lastBackupDate', new Date().toISOString());
-            updateBackupInfo();
-        }
-
-        function restoreData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    let rt = [];
-                    if (data.tasks && Array.isArray(data.tasks)) rt = data.tasks;
-                    else if (Array.isArray(data)) rt = data;
-                    else { alert('Неверный формат'); return; }
-
-                    if (tasks.length > 0 && !confirm('Заменить текущие задачи (' + tasks.length + ') на ' + rt.length + ' из файла?')) {
-                        const mx = tasks.length ? Math.max(...tasks.map(t=>t.id)) : 0;
-                        rt.forEach((t,i) => { t.id = mx+i+1; });
-                        tasks = tasks.concat(rt);
-                    } else {
-                        tasks = rt;
-                    }
-                    if (data.projects) { projects = data.projects; saveProjects(); }
-                    if (data.projectTasks) { projectTasks = data.projectTasks; saveProjectTasks(); }
-                    saveTasks(); refreshCurrentView();
-                    alert('Восстановлено: ' + rt.length + ' задач');
-                } catch(err) { alert('Ошибка чтения файла'); }
-            };
-            reader.readAsText(file); event.target.value = '';
-        }
-
-        function updateBackupInfo() {
-            const lb = localStorage.getItem('lastBackupDate');
-            const el = document.getElementById('backupInfo');
-            if (tasks.length === 0) { el.textContent = ''; return; }
-            if (lb) {
-                const days = Math.floor((new Date() - new Date(lb)) / 86400000);
-                el.textContent = 'Последняя копия: ' + formatDate(new Date(lb).toISOString().split('T')[0]) + (days >= 3 ? ' — сохраните новую!' : '');
-            } else {
-                el.textContent = 'Сохраните резервную копию!';
-            }
-        }
-
-        function exportCSV() {
-            if (tasks.length === 0) { alert('Нет задач'); return; }
-            const pl = {high:'Высокая',medium:'Средняя',low:'Низкая',none:'Обычная'};
-            const h = ['№','Дата поступления','Краткая суть','Доп. информация','Дата ответа','Значимость','Статус','Заметки'];
-            const r = tasks.map(t => [t.id,formatDate(t.dateReceived),'"'+(t.summary||'').replace(/"/g,'""')+'"',
-                '"'+(t.additionalInfo||'').replace(/"/g,'""')+'"',formatDate(t.responseDate),
-                pl[t.priority||'none'],statusLabel(t.status),'"'+(t.notes||'').replace(/"/g,'""')+'"']);
-            const csv = '﻿' + [h.join(';'),...r.map(x=>x.join(';'))].join('\n');
-            const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url; a.download='tasks_'+new Date().toISOString().split('T')[0]+'.csv'; a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        document.addEventListener('keydown', e => { if (e.key==='Escape') { closeModal('taskModal'); closeModal('projectModal'); } });
-
-        renderTasks();
-        updateBackupInfo();
-    </script>
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('taskModal');closeModal('projectModal');}});
+renderTasks(); updateBackupInfo();
+</script>
 </body>
 </html>
