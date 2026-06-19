@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data: blob:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; img-src data: blob:;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,46 +11,38 @@
     <title>Учет задач банковского юриста</title>
     <link rel="icon" type="image/png" href="icon-180.png?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: Georgia, 'Times New Roman', serif;
+            font-family: 'Lora', Georgia, 'Times New Roman', serif;
             background: #f4f7fc; color: #1a1a2e; min-height: 100vh; padding-bottom: 90px;
             -webkit-font-smoothing: antialiased;
         }
-
-        /* Header */
         .header {
             background: linear-gradient(160deg, #2d3a8c 0%, #1e3a5f 40%, #0f2b46 100%);
             color: white; padding: 22px 16px 0;
             position: sticky; top: 0; z-index: 100;
             box-shadow: 0 6px 24px rgba(30,58,95,0.35);
         }
-        .header h1 { font-size: 19px; font-weight: 700; letter-spacing: 0.2px; }
+        .header h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.2px; }
         .header-sub { font-size: 11px; opacity: 0.7; margin-top: 3px; font-style: italic; }
-        .nav-bar { display: flex; gap: 4px; margin-top: 16px; }
+        .nav-bar { display: flex; gap: 3px; margin-top: 14px; }
         .nav-btn {
-            flex: 1; text-align: center; padding: 11px 4px; font-size: 12px; font-weight: 700;
-            font-family: Georgia, serif;
+            flex: 1; text-align: center; padding: 10px 2px; font-size: 11px; font-weight: 700;
+            font-family: 'Lora', Georgia, serif;
             color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.08);
             border: none; border-radius: 12px 12px 0 0; cursor: pointer; transition: all 0.25s;
         }
-        .nav-btn.active {
-            color: #1e3a5f; background: #f4f7fc;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
-        }
+        .nav-btn.active { color: #1e3a5f; background: #f4f7fc; box-shadow: 0 -2px 12px rgba(0,0,0,0.08); }
         .nav-count {
             display: inline-block; background: rgba(255,255,255,0.18);
-            border-radius: 8px; padding: 1px 7px; font-size: 10px; margin-left: 3px;
+            border-radius: 8px; padding: 1px 6px; font-size: 9px; margin-left: 2px;
         }
         .nav-btn.active .nav-count { background: #dde6f5; color: #1e3a5f; }
-
-        /* Container & Pages */
         .container { max-width: 800px; margin: 0 auto; padding: 14px; }
         .page { display: none; }
         .page.active { display: block; }
-
-        /* Stats */
         .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
         .stat-card {
             background: white; border-radius: 16px; padding: 16px;
@@ -59,15 +51,11 @@
         .stat-card .label { font-size: 10px; color: #7a8599; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; }
         .stat-card .value { font-size: 28px; font-weight: 700; color: #2d3a8c; margin-top: 4px; }
         .stat-card.overdue .value { color: #c0392b; }
-
-        /* Controls */
         .controls { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
         .controls-row { display: flex; gap: 8px; }
-
-        /* Buttons */
         .btn {
             padding: 11px 16px; border: none; border-radius: 14px; cursor: pointer;
-            font-size: 13px; font-weight: 700; font-family: Georgia, serif;
+            font-size: 13px; font-weight: 700; font-family: 'Lora', Georgia, serif;
             transition: all 0.2s; touch-action: manipulation;
         }
         .btn-primary {
@@ -87,19 +75,15 @@
         .btn-reopen:active { background: #fdecd4; }
         .btn-backup { background: #eef7f0; color: #1a8a4a; border: 1px solid #c3e6cb; }
         .btn-restore { background: #fef6ed; color: #b45309; border: 1px solid #f5d9a8; }
-
-        /* Inputs */
         .search-box {
             flex: 1; padding: 12px 16px; border: 2px solid #dde3ef; border-radius: 14px;
-            font-size: 14px; font-family: Georgia, serif; outline: none; background: white;
+            font-size: 14px; font-family: 'Lora', Georgia, serif; outline: none; background: white;
         }
         .search-box:focus { border-color: #2d3a8c; }
         .filter-select {
             padding: 12px 14px; border: 2px solid #dde3ef; border-radius: 14px;
-            font-size: 13px; font-family: Georgia, serif; outline: none; background: white; cursor: pointer; flex: 1;
+            font-size: 13px; font-family: 'Lora', Georgia, serif; outline: none; background: white; cursor: pointer; flex: 1;
         }
-
-        /* Task Cards */
         .task-list { display: flex; flex-direction: column; gap: 12px; }
         .task-card {
             background: white; border-radius: 18px; padding: 18px;
@@ -137,49 +121,62 @@
             margin-bottom: 14px; border: 1px solid #e4eaf4;
         }
         .task-notes-label { font-size: 10px; color: #99a3b3; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .task-notes-text {
-            font-size: 13px; color: #3d4f6a; line-height: 1.6;
-        }
+        .task-notes-text { font-size: 13px; color: #3d4f6a; line-height: 1.6; }
         .task-notes-text ul, .task-notes-text ol { padding-left: 20px; margin: 4px 0; }
         .task-notes-text li { margin-bottom: 2px; }
         .task-actions { display: flex; gap: 6px; flex-wrap: wrap; }
         .task-actions .btn { flex: 1; padding: 10px 10px; font-size: 12px; text-align: center; min-width: 0; }
         .overdue-date { color: #c0392b; font-weight: 700; }
         .completed-date { font-size: 11px; color: #99a3b3; margin-top: 8px; font-style: italic; }
-
-        /* Backup */
         .backup-section { display: flex; gap: 8px; margin-bottom: 12px; }
         .backup-section .btn { flex: 1; font-size: 12px; padding: 10px 8px; }
         .backup-info { font-size: 11px; color: #99a3b3; text-align: center; margin-bottom: 14px; font-style: italic; }
-
-        /* Projects */
-        .project-list { display: flex; flex-direction: column; gap: 12px; }
-        .project-card {
+        .project-list, .notes-list { display: flex; flex-direction: column; gap: 12px; }
+        .project-card, .note-card {
             background: white; border-radius: 18px; padding: 18px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e4eaf4;
             cursor: pointer;
         }
-        .project-card:active { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+        .project-card:active, .note-card:active { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
         .project-card-header { display: flex; justify-content: space-between; align-items: center; }
         .project-name { font-size: 16px; font-weight: 700; color: #1a1a2e; }
         .project-count { font-size: 11px; color: #99a3b3; background: #f0f3f8; padding: 3px 10px; border-radius: 12px; }
         .project-desc { font-size: 13px; color: #5a6a80; margin-top: 6px; font-style: italic; }
-        .project-actions { display: flex; gap: 6px; margin-top: 12px; }
-        .project-actions .btn { padding: 8px 14px; font-size: 12px; }
+        .project-actions, .note-actions { display: flex; gap: 6px; margin-top: 12px; }
+        .project-actions .btn, .note-actions .btn { padding: 8px 14px; font-size: 12px; }
         .project-inner-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
         .back-btn {
             background: #e4eaf4; color: #2d3a8c; border: none; border-radius: 12px;
-            padding: 9px 16px; font-size: 13px; font-weight: 700; font-family: Georgia, serif; cursor: pointer;
+            padding: 9px 16px; font-size: 13px; font-weight: 700; font-family: 'Lora', Georgia, serif; cursor: pointer;
         }
         .project-title { font-size: 17px; font-weight: 700; color: #1a1a2e; flex: 1; }
-
-        /* Empty State */
+        .note-card-title { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+        .note-card-preview { font-size: 13px; color: #5a6a80; line-height: 1.5; max-height: 60px; overflow: hidden; }
+        .note-card-date { font-size: 11px; color: #99a3b3; margin-top: 8px; font-style: italic; }
+        .note-editor-page { display: none; }
+        .note-editor-page.active { display: block; }
+        .note-title-input {
+            width: 100%; padding: 14px 0; border: none; border-bottom: 2px solid #dde3ef;
+            font-size: 20px; font-weight: 700; font-family: 'Lora', Georgia, serif;
+            outline: none; background: transparent; color: #1a1a2e; margin-bottom: 12px;
+        }
+        .note-title-input:focus { border-color: #2d3a8c; }
+        .note-body-editor {
+            border: 2px solid #dde3ef; border-top: none; border-radius: 0 0 14px 14px;
+            padding: 14px; min-height: 300px; font-size: 15px; font-family: 'Lora', Georgia, serif;
+            color: #1a1a2e; line-height: 1.7; background: white; outline: none;
+        }
+        .note-body-editor:focus { border-color: #2d3a8c; }
+        .note-body-editor:empty:before { content: attr(data-placeholder); color: #b0b8c8; font-style: italic; }
+        .note-body-editor ul, .note-body-editor ol { padding-left: 22px; margin: 6px 0; }
+        .note-body-editor li { margin-bottom: 3px; }
+        .note-body-editor h3 { font-size: 18px; margin: 10px 0 6px; }
+        .note-editor-actions { display: flex; gap: 8px; margin-bottom: 14px; }
+        .note-editor-actions .btn { font-size: 13px; padding: 10px 18px; }
         .empty-state { text-align: center; padding: 52px 20px; color: #99a3b3; }
         .empty-state-icon { font-size: 48px; margin-bottom: 14px; opacity: 0.35; }
         .empty-state p { font-size: 15px; margin-bottom: 4px; }
         .empty-state .sub { font-size: 13px; font-style: italic; }
-
-        /* Modal */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(15,20,40,0.55); backdrop-filter: blur(6px);
@@ -199,40 +196,32 @@
         .form-group label { display: block; font-size: 12px; font-weight: 700; color: #7a8599; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
         .form-group input, .form-group textarea, .form-group select {
             width: 100%; padding: 13px 14px; border: 2px solid #dde3ef; border-radius: 14px;
-            font-size: 14px; font-family: Georgia, serif; outline: none; background: white;
+            font-size: 14px; font-family: 'Lora', Georgia, serif; outline: none; background: white;
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #2d3a8c; }
         .form-group textarea { resize: none; min-height: 60px; overflow: hidden; }
-
-        /* Rich Text Editor */
         .editor-toolbar {
             display: flex; gap: 2px; padding: 6px 8px; background: #eef1f8; border: 2px solid #dde3ef;
             border-bottom: none; border-radius: 14px 14px 0 0; flex-wrap: wrap;
         }
         .editor-toolbar button {
             background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 10px;
-            font-size: 13px; cursor: pointer; color: #3d4f6a; font-family: Georgia, serif;
+            font-size: 13px; cursor: pointer; color: #3d4f6a; font-family: 'Lora', Georgia, serif;
             font-weight: 700; transition: all 0.15s; min-width: 34px; text-align: center;
         }
         .editor-toolbar button:active { background: #dde6f5; }
         .editor-toolbar .sep { width: 1px; background: #ccd3df; margin: 4px 4px; }
         .editor-area {
             border: 2px solid #dde3ef; border-top: none; border-radius: 0 0 14px 14px;
-            padding: 12px 14px; min-height: 70px; font-size: 14px; font-family: Georgia, serif;
-            color: #1a1a2e; line-height: 1.6; background: white; outline: none;
-            overflow: hidden;
+            padding: 12px 14px; min-height: 70px; font-size: 14px; font-family: 'Lora', Georgia, serif;
+            color: #1a1a2e; line-height: 1.6; background: white; outline: none; overflow: hidden;
         }
         .editor-area:focus { border-color: #2d3a8c; }
-        .editor-area:empty:before {
-            content: attr(data-placeholder); color: #b0b8c8; font-style: italic;
-        }
+        .editor-area:empty:before { content: attr(data-placeholder); color: #b0b8c8; font-style: italic; }
         .editor-area ul, .editor-area ol { padding-left: 22px; margin: 4px 0; }
         .editor-area li { margin-bottom: 2px; }
-
         .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
         .modal-actions .btn { flex: 1; padding: 14px; font-size: 15px; }
-
-        /* FAB */
         .fab {
             position: fixed; bottom: 22px; right: 22px; width: 58px; height: 58px;
             border-radius: 50%;
@@ -242,7 +231,6 @@
             display: flex; align-items: center; justify-content: center;
         }
         .fab:active { transform: scale(0.9); }
-
         @media (min-width: 600px) {
             .container { padding: 22px; }
             .modal { border-radius: 22px; margin: auto; max-width: 520px; }
@@ -257,8 +245,9 @@
         <div class="header-sub">Управление юридическими задачами</div>
         <div class="nav-bar">
             <button class="nav-btn active" id="navTasks" onclick="navigate('tasks')">Задачи <span class="nav-count" id="navTasksCount">0</span></button>
-            <button class="nav-btn" id="navCompleted" onclick="navigate('completed')">Завершено <span class="nav-count" id="navCompletedCount">0</span></button>
+            <button class="nav-btn" id="navCompleted" onclick="navigate('completed')">Готово <span class="nav-count" id="navCompletedCount">0</span></button>
             <button class="nav-btn" id="navProjects" onclick="navigate('projects')">Проекты <span class="nav-count" id="navProjectsCount">0</span></button>
+            <button class="nav-btn" id="navNotes" onclick="navigate('notes')">Заметки <span class="nav-count" id="navNotesCount">0</span></button>
         </div>
     </div>
     <div class="container">
@@ -266,7 +255,7 @@
             <div class="stats" id="stats"></div>
             <div class="controls">
                 <input type="text" class="search-box" id="searchBox" placeholder="Поиск..." oninput="renderTasks()">
-                <div class="controls-row" id="activeFilters">
+                <div class="controls-row">
                     <select class="filter-select" id="filterStatus" onchange="renderTasks()">
                         <option value="all">Все активные</option>
                         <option value="new">Новая</option>
@@ -301,6 +290,38 @@
                 <div class="task-list" id="projectTaskList"></div>
             </div>
         </div>
+        <div class="page" id="pageNotes">
+            <div id="notesListView">
+                <input type="text" class="search-box" id="searchNotes" placeholder="Поиск по заметкам..." oninput="renderNotes()" style="margin-bottom:12px;width:100%">
+                <div class="notes-list" id="notesList"></div>
+            </div>
+            <div id="noteEditorView" class="note-editor-page">
+                <div class="note-editor-actions">
+                    <button class="btn btn-secondary" onclick="closeNoteEditor()">&#8592; Назад</button>
+                    <button class="btn btn-primary" onclick="saveCurrentNote()">Сохранить</button>
+                    <button class="btn btn-danger" id="noteDeleteBtn" onclick="deleteCurrentNote()" style="display:none">Удалить</button>
+                </div>
+                <input type="text" class="note-title-input" id="noteTitle" placeholder="Заголовок заметки...">
+                <div class="editor-toolbar" id="noteEditorToolbar">
+                    <button type="button" onclick="noteCmd('bold')"><b>Ж</b></button>
+                    <button type="button" onclick="noteCmd('italic')"><i>К</i></button>
+                    <button type="button" onclick="noteCmd('underline')"><u>П</u></button>
+                    <div class="sep"></div>
+                    <button type="button" onclick="noteCmd('insertUnorderedList')">&#8226;</button>
+                    <button type="button" onclick="noteCmd('insertOrderedList')">1.</button>
+                    <div class="sep"></div>
+                    <button type="button" onclick="noteCmd('formatBlock','H3')">H</button>
+                    <button type="button" onclick="noteFontSize(2)" style="font-size:11px">A</button>
+                    <button type="button" onclick="noteFontSize(4)" style="font-size:14px">A</button>
+                    <button type="button" onclick="noteFontSize(6)" style="font-size:18px">A</button>
+                    <div class="sep"></div>
+                    <button type="button" onclick="noteCmd('strikeThrough')"><s>S</s></button>
+                    <button type="button" onclick="noteCmd('justifyLeft')">&#8676;</button>
+                    <button type="button" onclick="noteCmd('justifyCenter')">&#8596;</button>
+                </div>
+                <div class="note-body-editor" id="noteBody" contenteditable="true" data-placeholder="Начните писать..."></div>
+            </div>
+        </div>
     </div>
     <button class="fab" id="fabBtn" onclick="onFabClick()">+</button>
 
@@ -327,17 +348,17 @@
                 </div>
                 <div class="form-group">
                     <label>Заметки</label>
-                    <div class="editor-toolbar" id="editorToolbar">
-                        <button type="button" onclick="execCmd('bold')" title="Жирный"><b>Ж</b></button>
-                        <button type="button" onclick="execCmd('italic')" title="Курсив"><i>К</i></button>
-                        <button type="button" onclick="execCmd('underline')" title="Подчёркнутый"><u>П</u></button>
+                    <div class="editor-toolbar">
+                        <button type="button" onclick="execCmd('bold')"><b>Ж</b></button>
+                        <button type="button" onclick="execCmd('italic')"><i>К</i></button>
+                        <button type="button" onclick="execCmd('underline')"><u>П</u></button>
                         <div class="sep"></div>
-                        <button type="button" onclick="execCmd('insertUnorderedList')" title="Маркеры">&#8226;</button>
-                        <button type="button" onclick="execCmd('insertOrderedList')" title="Нумерация">1.</button>
+                        <button type="button" onclick="execCmd('insertUnorderedList')">&#8226;</button>
+                        <button type="button" onclick="execCmd('insertOrderedList')">1.</button>
                         <div class="sep"></div>
-                        <button type="button" onclick="setFontSize(2)" title="Мелкий" style="font-size:11px">A</button>
-                        <button type="button" onclick="setFontSize(4)" title="Средний" style="font-size:14px">A</button>
-                        <button type="button" onclick="setFontSize(6)" title="Крупный" style="font-size:18px">A</button>
+                        <button type="button" onclick="setFontSize(2)" style="font-size:11px">A</button>
+                        <button type="button" onclick="setFontSize(4)" style="font-size:14px">A</button>
+                        <button type="button" onclick="setFontSize(6)" style="font-size:18px">A</button>
                     </div>
                     <div class="editor-area" id="notesEditor" contenteditable="true" data-placeholder="Ваши заметки..."></div>
                 </div>
@@ -367,7 +388,6 @@
     </div>
 
 <script>
-// --- DATA ---
 const DEFAULT_TASKS = [
     {"dateReceived":"2026-06-17","summary":"Правовой анализ договоров банковского вклада, информации на сайте и в ДБО в части повышенной процентной ставки по вкладу и НС","additionalInfo":"Анализ документов (Сапунова)","responseDate":"2026-06-24","reminderDays":1,"priority":"high","status":"completed","notes":"","id":1,"createdAt":"2026-06-17T14:52:34.353Z","completedAt":"2026-06-18"},
     {"dateReceived":"2026-06-17","summary":"Задача по вопросу прекращения ДКБО","additionalInfo":"Жду ответы на вопросы","responseDate":"","reminderDays":1,"priority":"none","status":"in-progress","notes":"","id":2,"createdAt":"2026-06-17T14:52:53.287Z"},
@@ -383,41 +403,42 @@ let projects = JSON.parse(localStorage.getItem('lawyerProjects') || 'null');
 if (!projects) { projects = DEFAULT_PROJECTS; saveProjects(); }
 let projectTasks = JSON.parse(localStorage.getItem('lawyerProjectTasks') || 'null');
 if (!projectTasks) { projectTasks = DEFAULT_PT; saveProjectTasks(); }
+let userNotes = JSON.parse(localStorage.getItem('lawyerNotes') || 'null');
+if (!userNotes) { userNotes = []; saveNotes(); }
 
-let currentPage = 'tasks', currentProjectId = null;
+let currentPage = 'tasks', currentProjectId = null, editingNoteId = null;
 
 function saveTasks() { localStorage.setItem('lawyerTasks', JSON.stringify(tasks)); }
 function saveProjects() { localStorage.setItem('lawyerProjects', JSON.stringify(projects)); }
 function saveProjectTasks() { localStorage.setItem('lawyerProjectTasks', JSON.stringify(projectTasks)); }
+function saveNotes() { localStorage.setItem('lawyerNotes', JSON.stringify(userNotes)); }
 function nextId(a) { return (!a||!a.length) ? 1 : Math.max(...a.map(t=>t.id))+1; }
 function fmtDate(d) { if(!d)return'—'; const[y,m,dd]=d.split('-'); return `${dd}.${m}.${y}`; }
+function fmtDateTime(iso) { if(!iso)return''; const d=new Date(iso); return d.toLocaleDateString('ru-RU')+' '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}); }
 function stLabel(s) { return{'new':'Новая','in-progress':'В работе','waiting':'Ожидание','completed':'Завершена'}[s]||s; }
 function isOverdue(t) { return t.status!=='completed'&&t.responseDate&&new Date(t.responseDate)<new Date(new Date().toISOString().split('T')[0]); }
 function esc(t) { const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-const ALLOWED_TAGS = ['B','I','U','UL','OL','LI','BR','FONT','SPAN','P','DIV','STRONG','EM'];
+const ALLOWED_TAGS = ['B','I','U','UL','OL','LI','BR','FONT','SPAN','P','DIV','STRONG','EM','S','H3','H4'];
 function sanitizeHtml(html) {
     if (!html) return '';
     const tmp = document.createElement('div');
     tmp.innerHTML = html;
     function clean(node) {
-        const children = Array.from(node.childNodes);
-        children.forEach(child => {
+        Array.from(node.childNodes).forEach(child => {
             if (child.nodeType === 3) return;
             if (child.nodeType === 1) {
                 if (!ALLOWED_TAGS.includes(child.tagName)) {
-                    const text = document.createTextNode(child.textContent);
-                    node.replaceChild(text, child);
+                    node.replaceChild(document.createTextNode(child.textContent), child);
                     return;
                 }
-                const attrs = Array.from(child.attributes);
-                attrs.forEach(a => {
+                Array.from(child.attributes).forEach(a => {
                     if (a.name.startsWith('on') || a.value.trim().toLowerCase().startsWith('javascript:'))
                         child.removeAttribute(a.name);
                 });
                 if (child.tagName === 'FONT') {
-                    const allowed = ['size','color'];
-                    attrs.forEach(a => { if (!allowed.includes(a.name)) child.removeAttribute(a.name); });
+                    const ok = ['size','color'];
+                    Array.from(child.attributes).forEach(a => { if (!ok.includes(a.name)) child.removeAttribute(a.name); });
                 }
                 clean(child);
             } else { node.removeChild(child); }
@@ -445,13 +466,23 @@ function sanitizeTask(t) {
         completedAt: typeof t.completedAt === 'string' ? t.completedAt.slice(0,10) : undefined
     };
 }
+function sanitizeNote(n) {
+    if (!n || typeof n !== 'object') return null;
+    return {
+        id: typeof n.id === 'number' ? n.id : 0,
+        title: typeof n.title === 'string' ? n.title.slice(0,500) : '',
+        body: sanitizeHtml(typeof n.body === 'string' ? n.body.slice(0,100000) : ''),
+        createdAt: typeof n.createdAt === 'string' ? n.createdAt : new Date().toISOString(),
+        updatedAt: typeof n.updatedAt === 'string' ? n.updatedAt : new Date().toISOString()
+    };
+}
 
-// --- EDITOR ---
 function execCmd(cmd) { document.execCommand(cmd, false, null); document.getElementById('notesEditor').focus(); }
 function setFontSize(size) { document.execCommand('fontSize', false, size); document.getElementById('notesEditor').focus(); }
+function noteCmd(cmd, val) { document.execCommand(cmd, false, val||null); document.getElementById('noteBody').focus(); }
+function noteFontSize(size) { document.execCommand('fontSize', false, size); document.getElementById('noteBody').focus(); }
 function autoGrow(el) { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
 
-// --- NAV ---
 function navigate(p) {
     currentPage=p;
     document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -459,15 +490,17 @@ function navigate(p) {
     document.getElementById('page'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
     document.getElementById('nav'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
     document.getElementById('fabBtn').style.display=(p==='completed')?'none':'flex';
-    if(p==='tasks')renderTasks(); else if(p==='completed')renderCompleted(); else{closeProjectDetail();renderProjects();}
+    if(p==='tasks')renderTasks(); else if(p==='completed')renderCompleted();
+    else if(p==='projects'){closeProjectDetail();renderProjects();}
+    else if(p==='notes'){closeNoteEditor();renderNotes();}
 }
 function updateNav() {
     document.getElementById('navTasksCount').textContent=tasks.filter(t=>t.status!=='completed').length;
     document.getElementById('navCompletedCount').textContent=tasks.filter(t=>t.status==='completed').length;
     document.getElementById('navProjectsCount').textContent=projects.length;
+    document.getElementById('navNotesCount').textContent=userNotes.length;
 }
 
-// --- RENDER ---
 function updateStats() {
     const a=tasks.filter(t=>t.status!=='completed').length, o=tasks.filter(t=>isOverdue(t)).length, c=tasks.filter(t=>t.status==='completed').length;
     document.getElementById('stats').innerHTML=`
@@ -503,6 +536,7 @@ function cardHtml(t, done, pid) {
     const notesH=safeNotes?`<div class="task-notes"><div class="task-notes-label">Заметки</div><div class="task-notes-text">${safeNotes}</div></div>`:'';
     const addH=t.additionalInfo?`<div class="task-detail"><span class="task-detail-label">Доп. инфо:</span><span class="task-detail-value">${esc(t.additionalInfo)}</span></div>`:'';
     const cdH=t.completedAt?`<div class="completed-date">Завершена: ${fmtDate(t.completedAt)}</div>`:'';
+    const safeStatus=VALID_STATUSES.includes(t.status)?t.status:'new';
     const pa=pid?`,${pid}`:'';
     let acts;
     if(done){
@@ -512,7 +546,7 @@ function cardHtml(t, done, pid) {
         acts=`<div class="task-actions"><button class="btn btn-secondary" onclick="editTask(${t.id}${pa})">Изменить</button><button class="btn btn-success" onclick="completeTask(${t.id}${pa})">Готово</button>${cal}<button class="btn btn-danger" onclick="deleteTask(${t.id}${pa})">Удалить</button></div>`;
     }
     return `<div class="task-card ${cls}">
-        <div class="task-card-header"><span class="task-number">#${t.id}${priH}</span><span class="status-badge status-${VALID_STATUSES.includes(t.status)?t.status:'new'}">${stLabel(t.status)}</span></div>
+        <div class="task-card-header"><span class="task-number">#${t.id}${priH}</span><span class="status-badge status-${safeStatus}">${stLabel(safeStatus)}</span></div>
         <div class="task-summary">${esc(t.summary)}</div>
         <div class="task-details">
             <div class="task-detail"><span class="task-detail-label">Поступила:</span><span class="task-detail-value">${fmtDate(t.dateReceived)}</span></div>
@@ -533,7 +567,6 @@ function renderCompleted() {
     el.innerHTML=f.length?f.map(t=>cardHtml(t,true)).join(''):'<div class="empty-state"><div class="empty-state-icon">&#9989;</div><p>Нет завершённых задач</p><p class="sub">Завершённые задачи появятся здесь</p></div>';
 }
 
-// --- TASK ACTIONS ---
 function getList(pid) { return pid?projectTasks[pid]||[]:tasks; }
 function setList(pid,l) { if(pid){projectTasks[pid]=l;saveProjectTasks();}else{tasks=l;saveTasks();} }
 
@@ -600,7 +633,6 @@ function deleteTask(id,pid) {
     setList(pid,getList(pid).filter(x=>x.id!==id)); refreshView();
 }
 
-// --- CALENDAR ---
 function addToCalendar(id,pid) {
     const t=(getList(pid)).find(x=>x.id===id); if(!t||!t.responseDate)return;
     const dt=t.responseDate.replace(/-/g,'');
@@ -625,7 +657,6 @@ function addToCalendar(id,pid) {
     const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='task_'+t.id+'.ics'; a.click(); URL.revokeObjectURL(url);
 }
 
-// --- PROJECTS ---
 function renderProjects() {
     updateNav();
     const el=document.getElementById('projectList');
@@ -686,21 +717,87 @@ function renderProjectTasks() {
     el.innerHTML=h;
 }
 
-// --- COMMON ---
+// --- NOTES ---
+function renderNotes() {
+    updateNav();
+    const el=document.getElementById('notesList');
+    const s=(document.getElementById('searchNotes').value||'').toLowerCase();
+    let filtered=userNotes;
+    if(s) filtered=userNotes.filter(n=>n.title.toLowerCase().includes(s)||(n.body&&n.body.toLowerCase().includes(s)));
+    filtered.sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
+    if(!filtered.length){
+        el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128196;</div><p>Нет заметок</p><p class="sub">Нажмите + чтобы создать</p></div>';
+        return;
+    }
+    el.innerHTML=filtered.map(n=>{
+        const preview=n.body?n.body.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').slice(0,120):'';
+        return `<div class="note-card" onclick="openNoteEditor(${n.id})">
+            <div class="note-card-title">${esc(n.title||'Без заголовка')}</div>
+            ${preview?`<div class="note-card-preview">${esc(preview)}${preview.length>=120?'...':''}</div>`:''}
+            <div class="note-card-date">${fmtDateTime(n.updatedAt)}</div>
+        </div>`;
+    }).join('');
+}
+function openNoteEditor(id) {
+    if(id) {
+        const n=userNotes.find(x=>x.id===id); if(!n)return;
+        editingNoteId=id;
+        document.getElementById('noteTitle').value=n.title||'';
+        document.getElementById('noteBody').innerHTML=n.body||'';
+        document.getElementById('noteDeleteBtn').style.display='inline-block';
+    } else {
+        editingNoteId=null;
+        document.getElementById('noteTitle').value='';
+        document.getElementById('noteBody').innerHTML='';
+        document.getElementById('noteDeleteBtn').style.display='none';
+    }
+    document.getElementById('notesListView').style.display='none';
+    document.getElementById('noteEditorView').style.display='block';
+    document.getElementById('noteEditorView').classList.add('active');
+    document.getElementById('fabBtn').style.display='none';
+}
+function closeNoteEditor() {
+    editingNoteId=null;
+    document.getElementById('notesListView').style.display='block';
+    document.getElementById('noteEditorView').style.display='none';
+    document.getElementById('noteEditorView').classList.remove('active');
+    document.getElementById('fabBtn').style.display='flex';
+    renderNotes();
+}
+function saveCurrentNote() {
+    const title=document.getElementById('noteTitle').value.trim();
+    const body=sanitizeHtml(document.getElementById('noteBody').innerHTML.trim());
+    if(!title&&!body){alert('Заметка пуста');return;}
+    if(editingNoteId) {
+        const n=userNotes.find(x=>x.id===editingNoteId);
+        if(n){n.title=title;n.body=body;n.updatedAt=new Date().toISOString();}
+    } else {
+        userNotes.push({id:nextId(userNotes),title,body,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+    }
+    saveNotes(); closeNoteEditor();
+}
+function deleteCurrentNote() {
+    if(!editingNoteId)return;
+    if(!confirm('Удалить заметку?'))return;
+    userNotes=userNotes.filter(x=>x.id!==editingNoteId);
+    saveNotes(); closeNoteEditor();
+}
+
 function closeModal(id){document.getElementById(id).classList.remove('active');}
 function closeModalOv(e,id){if(e.target===e.currentTarget)closeModal(id);}
 function onFabClick() {
     if(currentPage==='tasks')openTaskModal();
     else if(currentPage==='projects'){if(currentProjectId)openTaskModal(currentProjectId);else openProjectModal();}
+    else if(currentPage==='notes')openNoteEditor();
 }
 function refreshView() {
     if(currentPage==='tasks')renderTasks(); else if(currentPage==='completed')renderCompleted();
     else if(currentPage==='projects'){if(currentProjectId)renderProjectTasks();else renderProjects();}
+    else if(currentPage==='notes')renderNotes();
 }
 
-// --- BACKUP (saves everything) ---
 function backupData() {
-    const data={version:2,exportDate:new Date().toISOString(),tasks,projects,projectTasks};
+    const data={version:3,exportDate:new Date().toISOString(),tasks,projects,projectTasks,userNotes};
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
     const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;
     a.download='tasks_backup_'+new Date().toISOString().split('T')[0]+'.json'; a.click(); URL.revokeObjectURL(url);
@@ -734,7 +831,11 @@ function restoreData(event) {
                 });
                 projectTasks=safePT; saveProjectTasks();
             }
-            saveTasks(); refreshView(); alert('Восстановлено: '+rt.length+' задач');
+            if(data.userNotes&&Array.isArray(data.userNotes)){
+                userNotes=data.userNotes.map(sanitizeNote).filter(Boolean);
+                saveNotes();
+            }
+            saveTasks(); refreshView(); alert('Восстановлено: '+rt.length+' задач'+(data.userNotes?' и '+(userNotes.length)+' заметок':''));
         }catch(err){alert('Ошибка чтения файла');}
     };
     reader.readAsText(file); event.target.value='';
