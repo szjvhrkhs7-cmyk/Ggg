@@ -173,6 +173,21 @@
         .note-body-editor h3 { font-size: 18px; margin: 10px 0 6px; }
         .note-editor-actions { display: flex; gap: 8px; margin-bottom: 14px; }
         .note-editor-actions .btn { font-size: 13px; padding: 10px 18px; }
+        .completed-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; margin-top: 18px; background: white; border-radius: 16px;
+            border: 1px solid #e4eaf4; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s;
+        }
+        .completed-toggle:active { background: #f0f3f8; }
+        .completed-toggle-left { display: flex; align-items: center; gap: 10px; }
+        .completed-toggle-label { font-size: 14px; font-weight: 700; color: #1a8a4a; }
+        .completed-toggle-count { font-size: 11px; color: #99a3b3; background: #eef7f0; padding: 3px 10px; border-radius: 12px; font-weight: 700; }
+        .completed-toggle-arrow { font-size: 16px; color: #99a3b3; transition: transform 0.3s; }
+        .completed-toggle.open .completed-toggle-arrow { transform: rotate(180deg); }
+        .completed-section { overflow: hidden; max-height: 0; transition: max-height 0.4s ease; }
+        .completed-section.open { max-height: 9999px; }
+        .completed-section .task-list { margin-top: 12px; }
         .empty-state { text-align: center; padding: 52px 20px; color: #99a3b3; }
         .empty-state-icon { font-size: 48px; margin-bottom: 14px; opacity: 0.35; }
         .empty-state p { font-size: 15px; margin-bottom: 4px; }
@@ -245,7 +260,6 @@
         <div class="header-sub">Управление юридическими задачами</div>
         <div class="nav-bar">
             <button class="nav-btn active" id="navTasks" onclick="navigate('tasks')">Задачи <span class="nav-count" id="navTasksCount">0</span></button>
-            <button class="nav-btn" id="navCompleted" onclick="navigate('completed')">Готово <span class="nav-count" id="navCompletedCount">0</span></button>
             <button class="nav-btn" id="navProjects" onclick="navigate('projects')">Проекты <span class="nav-count" id="navProjectsCount">0</span></button>
             <button class="nav-btn" id="navNotes" onclick="navigate('notes')">Заметки <span class="nav-count" id="navNotesCount">0</span></button>
         </div>
@@ -272,10 +286,6 @@
             </div>
             <div class="backup-info" id="backupInfo"></div>
             <div class="task-list" id="taskList"></div>
-        </div>
-        <div class="page" id="pageCompleted">
-            <input type="text" class="search-box" id="searchCompleted" placeholder="Поиск по завершённым..." oninput="renderCompleted()" style="margin-bottom:12px;width:100%">
-            <div class="task-list" id="completedList"></div>
         </div>
         <div class="page" id="pageProjects">
             <div id="projectListView">
@@ -489,14 +499,13 @@ function navigate(p) {
     document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
     document.getElementById('page'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
     document.getElementById('nav'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('active');
-    document.getElementById('fabBtn').style.display=(p==='completed')?'none':'flex';
-    if(p==='tasks')renderTasks(); else if(p==='completed')renderCompleted();
+    document.getElementById('fabBtn').style.display='flex';
+    if(p==='tasks')renderTasks();
     else if(p==='projects'){closeProjectDetail();renderProjects();}
     else if(p==='notes'){closeNoteEditor();renderNotes();}
 }
 function updateNav() {
     document.getElementById('navTasksCount').textContent=tasks.filter(t=>t.status!=='completed').length;
-    document.getElementById('navCompletedCount').textContent=tasks.filter(t=>t.status==='completed').length;
     document.getElementById('navProjectsCount').textContent=projects.length;
     document.getElementById('navNotesCount').textContent=userNotes.length;
 }
@@ -555,16 +564,27 @@ function cardHtml(t, done, pid) {
         </div>${notesH}${cdH}${acts}</div>`;
 }
 
+let completedOpen = false;
 function renderTasks() {
     updateStats(); updateNav();
     const f=getFiltered(tasks,'searchBox','filterStatus',true), el=document.getElementById('taskList');
-    el.innerHTML=f.length?f.map(t=>cardHtml(t,false)).join(''):'<div class="empty-state"><div class="empty-state-icon">&#128221;</div><p>Нет активных задач</p><p class="sub">Нажмите + чтобы добавить</p></div>';
+    let h=f.length?f.map(t=>cardHtml(t,false)).join(''):'<div class="empty-state"><div class="empty-state-icon">&#128221;</div><p>Нет активных задач</p><p class="sub">Нажмите + чтобы добавить</p></div>';
+    const done=tasks.filter(t=>t.status==='completed').sort((a,b)=>b.id-a.id);
+    if(done.length){
+        h+=`<div class="completed-toggle ${completedOpen?'open':''}" onclick="toggleCompleted()">
+            <div class="completed-toggle-left"><span class="completed-toggle-label">Завершённые</span><span class="completed-toggle-count">${done.length}</span></div>
+            <span class="completed-toggle-arrow">&#9660;</span></div>`;
+        h+=`<div class="completed-section ${completedOpen?'open':''}"><div class="task-list">${done.map(t=>cardHtml(t,true)).join('')}</div></div>`;
+    }
+    el.innerHTML=h;
     updateBackupInfo();
 }
-function renderCompleted() {
-    updateNav();
-    const f=getFiltered(tasks,'searchCompleted',null,false), el=document.getElementById('completedList');
-    el.innerHTML=f.length?f.map(t=>cardHtml(t,true)).join(''):'<div class="empty-state"><div class="empty-state-icon">&#9989;</div><p>Нет завершённых задач</p><p class="sub">Завершённые задачи появятся здесь</p></div>';
+function toggleCompleted() {
+    completedOpen=!completedOpen;
+    const tog=document.querySelector('.completed-toggle');
+    const sec=document.querySelector('.completed-section');
+    if(tog)tog.classList.toggle('open',completedOpen);
+    if(sec)sec.classList.toggle('open',completedOpen);
 }
 
 function getList(pid) { return pid?projectTasks[pid]||[]:tasks; }
@@ -791,7 +811,7 @@ function onFabClick() {
     else if(currentPage==='notes')openNoteEditor();
 }
 function refreshView() {
-    if(currentPage==='tasks')renderTasks(); else if(currentPage==='completed')renderCompleted();
+    if(currentPage==='tasks')renderTasks();
     else if(currentPage==='projects'){if(currentProjectId)renderProjectTasks();else renderProjects();}
     else if(currentPage==='notes')renderNotes();
 }
