@@ -397,6 +397,23 @@
         </div>
     </div>
 
+    <!-- Calendar Modal -->
+    <div class="modal-overlay" id="calendarModal" onclick="closeModalOv(event,'calendarModal')">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <h2>Уведомление в календарь</h2>
+            <input type="hidden" id="calTaskId">
+            <input type="hidden" id="calProjectId">
+            <div id="calTaskInfo" style="font-size:13px;color:#5a6a80;margin-bottom:18px;padding:12px 14px;background:#f8f9fc;border-radius:12px;border:1px solid #e4eaf4;line-height:1.5"></div>
+            <div class="form-group"><label>Дата уведомления *</label><input type="date" id="calDate" required></div>
+            <div class="form-group"><label>Время уведомления *</label><input type="time" id="calTime" required></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('calendarModal')">Отмена</button>
+                <button type="button" class="btn btn-primary" onclick="confirmCalendar()">Добавить</button>
+            </div>
+        </div>
+    </div>
+
 <script>
 const DEFAULT_TASKS = [
     {"dateReceived":"2026-06-17","summary":"Правовой анализ договоров банковского вклада, информации на сайте и в ДБО в части повышенной процентной ставки по вкладу и НС","additionalInfo":"Анализ документов (Сапунова)","responseDate":"2026-06-24","reminderDays":1,"priority":"high","status":"completed","notes":"","id":1,"createdAt":"2026-06-17T14:52:34.353Z","completedAt":"2026-06-18"},
@@ -551,8 +568,7 @@ function cardHtml(t, done, pid) {
     if(done){
         acts=`<div class="task-actions"><button class="btn btn-reopen" onclick="reopenTask(${t.id}${pa})">В работу</button><button class="btn btn-danger" onclick="deleteTask(${t.id}${pa})">Удалить</button></div>`;
     } else {
-        const cal=t.responseDate?`<button class="btn btn-calendar" onclick="addToCalendar(${t.id}${pa})">Календарь</button>`:'';
-        acts=`<div class="task-actions"><button class="btn btn-secondary" onclick="editTask(${t.id}${pa})">Изменить</button><button class="btn btn-success" onclick="completeTask(${t.id}${pa})">Готово</button>${cal}<button class="btn btn-danger" onclick="deleteTask(${t.id}${pa})">Удалить</button></div>`;
+        acts=`<div class="task-actions"><button class="btn btn-secondary" onclick="editTask(${t.id}${pa})">Изменить</button><button class="btn btn-success" onclick="completeTask(${t.id}${pa})">Готово</button><button class="btn btn-calendar" onclick="openCalendarModal(${t.id}${pa})">Календарь</button><button class="btn btn-danger" onclick="deleteTask(${t.id}${pa})">Удалить</button></div>`;
     }
     return `<div class="task-card ${cls}">
         <div class="task-card-header"><span class="task-number">#${t.id}${priH}</span><span class="status-badge status-${safeStatus}">${stLabel(safeStatus)}</span></div>
@@ -653,28 +669,52 @@ function deleteTask(id,pid) {
     setList(pid,getList(pid).filter(x=>x.id!==id)); refreshView();
 }
 
-function addToCalendar(id,pid) {
-    const t=(getList(pid)).find(x=>x.id===id); if(!t||!t.responseDate)return;
-    const dt=t.responseDate.replace(/-/g,'');
-    const nd=new Date(t.responseDate); nd.setDate(nd.getDate()+1);
-    const ed=nd.toISOString().split('T')[0].replace(/-/g,'');
-    const rm=(t.reminderDays||0)*24*60;
+function openCalendarModal(id,pid) {
+    const t=(getList(pid)).find(x=>x.id===id); if(!t)return;
+    document.getElementById('calTaskId').value=id;
+    document.getElementById('calProjectId').value=pid||'';
+    const pl={high:'Высокая',medium:'Средняя',low:'Низкая'};
+    const priText=t.priority&&t.priority!=='none'?' ('+pl[t.priority]+')':'';
+    document.getElementById('calTaskInfo').innerHTML='<b>#'+t.id+priText+'</b><br>'+esc(t.summary);
+    const now=new Date();
+    if(t.responseDate){
+        document.getElementById('calDate').value=t.responseDate;
+    } else {
+        document.getElementById('calDate').value=now.toISOString().split('T')[0];
+    }
+    document.getElementById('calTime').value='09:00';
+    document.getElementById('calendarModal').classList.add('active');
+}
+function confirmCalendar() {
+    const id=Number(document.getElementById('calTaskId').value);
+    const pid=document.getElementById('calProjectId').value||null;
+    const t=(getList(pid)).find(x=>x.id===id); if(!t)return;
+    const dateVal=document.getElementById('calDate').value;
+    const timeVal=document.getElementById('calTime').value;
+    if(!dateVal||!timeVal){alert('Укажите дату и время');return;}
+    const dt=dateVal.replace(/-/g,'')+'T'+timeVal.replace(/:/g,'')+'00';
+    const endD=new Date(dateVal+'T'+timeVal);
+    endD.setHours(endD.getHours()+1);
+    const pad=n=>String(n).padStart(2,'0');
+    const et=endD.getFullYear()+pad(endD.getMonth()+1)+pad(endD.getDate())+'T'+pad(endD.getHours())+pad(endD.getMinutes())+'00';
     const pl={high:'ВЫСОКАЯ',medium:'СРЕДНЯЯ',low:'НИЗКАЯ'};
     const pt=t.priority&&t.priority!=='none'?' ['+pl[t.priority]+']':'';
     let desc=t.summary;
     if(t.additionalInfo)desc+='\\nДоп.: '+t.additionalInfo;
+    if(t.responseDate)desc+='\\nОтвет до: '+fmtDate(t.responseDate);
     const plainNotes=t.notes?t.notes.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' '):'';
     if(plainNotes)desc+='\\nЗаметки: '+plainNotes;
     desc=desc.replace(/[\r\n]+/g,'\\n');
     const escI=s=>s.replace(/[\r\n]+/g,' ').replace(/[\\;,]/g,c=>'\\'+c);
     const uid='task-'+t.id+'-'+Date.now()+'@lawyer-tasks';
     const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Lawyer Tasks//RU','CALSCALE:GREGORIAN',
-        'BEGIN:VEVENT','UID:'+uid,'DTSTART;VALUE=DATE:'+dt,'DTEND;VALUE=DATE:'+ed,
+        'BEGIN:VEVENT','UID:'+uid,'DTSTART:'+dt,'DTEND:'+et,
         'SUMMARY:'+escI(t.summary+pt),'DESCRIPTION:'+escI(desc),
-        'BEGIN:VALARM','TRIGGER:-PT'+rm+'M','ACTION:DISPLAY','DESCRIPTION:Задача #'+t.id,'END:VALARM',
+        'BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:Задача #'+t.id,'END:VALARM',
         'END:VEVENT','END:VCALENDAR'];
     const blob=new Blob([ics.join('\r\n')],{type:'text/calendar;charset=utf-8'});
     const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='task_'+t.id+'.ics'; a.click(); URL.revokeObjectURL(url);
+    closeModal('calendarModal');
 }
 
 function renderProjects() {
@@ -880,7 +920,7 @@ function exportCSV() {
     a.download='tasks_'+new Date().toISOString().split('T')[0]+'.csv'; a.click(); URL.revokeObjectURL(url);
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('taskModal');closeModal('projectModal');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('taskModal');closeModal('projectModal');closeModal('calendarModal');}});
 renderTasks(); updateBackupInfo();
 </script>
 </body>
