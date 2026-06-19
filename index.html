@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data: blob:;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -394,6 +395,57 @@ function stLabel(s) { return{'new':'Новая','in-progress':'В работе',
 function isOverdue(t) { return t.status!=='completed'&&t.responseDate&&new Date(t.responseDate)<new Date(new Date().toISOString().split('T')[0]); }
 function esc(t) { const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
+const ALLOWED_TAGS = ['B','I','U','UL','OL','LI','BR','FONT','SPAN','P','DIV','STRONG','EM'];
+function sanitizeHtml(html) {
+    if (!html) return '';
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    function clean(node) {
+        const children = Array.from(node.childNodes);
+        children.forEach(child => {
+            if (child.nodeType === 3) return;
+            if (child.nodeType === 1) {
+                if (!ALLOWED_TAGS.includes(child.tagName)) {
+                    const text = document.createTextNode(child.textContent);
+                    node.replaceChild(text, child);
+                    return;
+                }
+                const attrs = Array.from(child.attributes);
+                attrs.forEach(a => {
+                    if (a.name.startsWith('on') || a.value.trim().toLowerCase().startsWith('javascript:'))
+                        child.removeAttribute(a.name);
+                });
+                if (child.tagName === 'FONT') {
+                    const allowed = ['size','color'];
+                    attrs.forEach(a => { if (!allowed.includes(a.name)) child.removeAttribute(a.name); });
+                }
+                clean(child);
+            } else { node.removeChild(child); }
+        });
+    }
+    clean(tmp);
+    return tmp.innerHTML;
+}
+
+const VALID_STATUSES = ['new','in-progress','waiting','completed'];
+const VALID_PRIORITIES = ['none','low','medium','high'];
+function sanitizeTask(t) {
+    if (!t || typeof t !== 'object') return null;
+    return {
+        id: typeof t.id === 'number' ? t.id : 0,
+        dateReceived: typeof t.dateReceived === 'string' ? t.dateReceived.slice(0,10) : '',
+        summary: typeof t.summary === 'string' ? t.summary.slice(0,2000) : '',
+        additionalInfo: typeof t.additionalInfo === 'string' ? t.additionalInfo.slice(0,2000) : '',
+        responseDate: typeof t.responseDate === 'string' ? t.responseDate.slice(0,10) : '',
+        reminderDays: typeof t.reminderDays === 'number' ? Math.min(Math.max(t.reminderDays,0),30) : 1,
+        priority: VALID_PRIORITIES.includes(t.priority) ? t.priority : 'none',
+        status: VALID_STATUSES.includes(t.status) ? t.status : 'new',
+        notes: sanitizeHtml(typeof t.notes === 'string' ? t.notes.slice(0,50000) : ''),
+        createdAt: typeof t.createdAt === 'string' ? t.createdAt : new Date().toISOString(),
+        completedAt: typeof t.completedAt === 'string' ? t.completedAt.slice(0,10) : undefined
+    };
+}
+
 // --- EDITOR ---
 function execCmd(cmd) { document.execCommand(cmd, false, null); document.getElementById('notesEditor').focus(); }
 function setFontSize(size) { document.execCommand('fontSize', false, size); document.getElementById('notesEditor').focus(); }
@@ -441,13 +493,14 @@ function getFiltered(list, sId, fId, active) {
 }
 
 function cardHtml(t, done, pid) {
-    const pri=t.priority||'none';
+    const pri=VALID_PRIORITIES.includes(t.priority)?t.priority:'none';
     let cls=done?'completed':isOverdue(t)?'overdue':'';
     if(!done&&(pri==='high'||pri==='medium'))cls+=' priority-'+pri+'-card';
     const dc=isOverdue(t)?'overdue-date':'';
     const plbl={high:'Высокая',medium:'Средняя',low:'Низкая'};
     const priH=pri!=='none'?`<span class="priority-badge priority-${pri}">${plbl[pri]}</span>`:'';
-    const notesH=t.notes?`<div class="task-notes"><div class="task-notes-label">Заметки</div><div class="task-notes-text">${t.notes}</div></div>`:'';
+    const safeNotes=t.notes?sanitizeHtml(t.notes):'';
+    const notesH=safeNotes?`<div class="task-notes"><div class="task-notes-label">Заметки</div><div class="task-notes-text">${safeNotes}</div></div>`:'';
     const addH=t.additionalInfo?`<div class="task-detail"><span class="task-detail-label">Доп. инфо:</span><span class="task-detail-value">${esc(t.additionalInfo)}</span></div>`:'';
     const cdH=t.completedAt?`<div class="completed-date">Завершена: ${fmtDate(t.completedAt)}</div>`:'';
     const pa=pid?`,${pid}`:'';
@@ -459,7 +512,7 @@ function cardHtml(t, done, pid) {
         acts=`<div class="task-actions"><button class="btn btn-secondary" onclick="editTask(${t.id}${pa})">Изменить</button><button class="btn btn-success" onclick="completeTask(${t.id}${pa})">Готово</button>${cal}<button class="btn btn-danger" onclick="deleteTask(${t.id}${pa})">Удалить</button></div>`;
     }
     return `<div class="task-card ${cls}">
-        <div class="task-card-header"><span class="task-number">#${t.id}${priH}</span><span class="status-badge status-${t.status}">${stLabel(t.status)}</span></div>
+        <div class="task-card-header"><span class="task-number">#${t.id}${priH}</span><span class="status-badge status-${VALID_STATUSES.includes(t.status)?t.status:'new'}">${stLabel(t.status)}</span></div>
         <div class="task-summary">${esc(t.summary)}</div>
         <div class="task-details">
             <div class="task-detail"><span class="task-detail-label">Поступила:</span><span class="task-detail-value">${fmtDate(t.dateReceived)}</span></div>
@@ -524,7 +577,7 @@ function saveTask(e) {
         reminderDays:parseInt(document.getElementById('reminderDays').value)||0,
         priority:document.getElementById('priority').value,
         status:ns,
-        notes:document.getElementById('notesEditor').innerHTML.trim()
+        notes:sanitizeHtml(document.getElementById('notesEditor').innerHTML.trim())
     };
     if(ns==='completed')d.completedAt=new Date().toISOString().split('T')[0];
     if(id){const i=list.findIndex(x=>x.id===Number(id));if(i!==-1)list[i]={...list[i],...d};}
@@ -560,8 +613,8 @@ function addToCalendar(id,pid) {
     if(t.additionalInfo)desc+='\\nДоп.: '+t.additionalInfo;
     const plainNotes=t.notes?t.notes.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' '):'';
     if(plainNotes)desc+='\\nЗаметки: '+plainNotes;
-    desc=desc.replace(/\n/g,'\\n');
-    const escI=s=>s.replace(/[\\;,]/g,c=>'\\'+c);
+    desc=desc.replace(/[\r\n]+/g,'\\n');
+    const escI=s=>s.replace(/[\r\n]+/g,' ').replace(/[\\;,]/g,c=>'\\'+c);
     const uid='task-'+t.id+'-'+Date.now()+'@lawyer-tasks';
     const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Lawyer Tasks//RU','CALSCALE:GREGORIAN',
         'BEGIN:VEVENT','UID:'+uid,'DTSTART;VALUE=DATE:'+dt,'DTEND;VALUE=DATE:'+ed,
@@ -659,15 +712,28 @@ function restoreData(event) {
     reader.onload=function(e){
         try{
             const data=JSON.parse(e.target.result);
-            let rt=[];
-            if(data.tasks&&Array.isArray(data.tasks))rt=data.tasks; else if(Array.isArray(data))rt=data;
+            let raw=[];
+            if(data.tasks&&Array.isArray(data.tasks))raw=data.tasks; else if(Array.isArray(data))raw=data;
             else{alert('Неверный формат');return;}
+            let rt=raw.map(sanitizeTask).filter(Boolean);
+            if(!rt.length){alert('Нет корректных задач в файле');return;}
             if(tasks.length>0&&!confirm('Заменить '+tasks.length+' задач на '+rt.length+' из файла?')){
                 const mx=tasks.length?Math.max(...tasks.map(t=>t.id)):0;
                 rt.forEach((t,i)=>{t.id=mx+i+1;}); tasks=tasks.concat(rt);
             } else tasks=rt;
-            if(data.projects){projects=data.projects;saveProjects();}
-            if(data.projectTasks){projectTasks=data.projectTasks;saveProjectTasks();}
+            if(data.projects&&Array.isArray(data.projects)){
+                projects=data.projects.filter(p=>p&&typeof p==='object'&&typeof p.name==='string')
+                    .map(p=>({id:typeof p.id==='number'?p.id:0,name:p.name.slice(0,500),description:typeof p.description==='string'?p.description.slice(0,2000):'',createdAt:typeof p.createdAt==='string'?p.createdAt:new Date().toISOString()}));
+                saveProjects();
+            }
+            if(data.projectTasks&&typeof data.projectTasks==='object'&&!Array.isArray(data.projectTasks)){
+                const safePT={};
+                Object.keys(data.projectTasks).forEach(k=>{
+                    if(/^\d+$/.test(k)&&Array.isArray(data.projectTasks[k]))
+                        safePT[k]=data.projectTasks[k].map(sanitizeTask).filter(Boolean);
+                });
+                projectTasks=safePT; saveProjectTasks();
+            }
             saveTasks(); refreshView(); alert('Восстановлено: '+rt.length+' задач');
         }catch(err){alert('Ошибка чтения файла');}
     };
@@ -683,9 +749,10 @@ function exportCSV() {
     if(!tasks.length){alert('Нет задач');return;}
     const pl={high:'Высокая',medium:'Средняя',low:'Низкая',none:'Обычная'};
     const h=['№','Дата поступления','Суть','Доп. инфо','Дата ответа','Значимость','Статус','Заметки'];
-    const r=tasks.map(t=>[t.id,fmtDate(t.dateReceived),'"'+(t.summary||'').replace(/"/g,'""')+'"',
-        '"'+(t.additionalInfo||'').replace(/"/g,'""')+'"',fmtDate(t.responseDate),pl[t.priority||'none'],stLabel(t.status),
-        '"'+((t.notes||'').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ')).replace(/"/g,'""')+'"']);
+    const csvSafe=s=>{let v=(s||'').replace(/"/g,'""');if(/^[=+\-@|]/.test(v))v="'"+v;return'"'+v+'"';};
+    const r=tasks.map(t=>[t.id,fmtDate(t.dateReceived),csvSafe(t.summary),
+        csvSafe(t.additionalInfo),fmtDate(t.responseDate),pl[t.priority||'none'],stLabel(t.status),
+        csvSafe((t.notes||'').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' '))]);
     const csv='﻿'+[h.join(';'),...r.map(x=>x.join(';'))].join('\n');
     const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
     const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;
