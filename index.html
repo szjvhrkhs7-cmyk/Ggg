@@ -11,14 +11,17 @@
     <title>Учет задач банковского юриста</title>
     <link rel="icon" type="image/png" href="icon-180.png?v=2">
     <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=2">
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Lora', Georgia, 'Times New Roman', serif;
             background: #0e1621; color: #f5f5f5; min-height: 100vh; padding-bottom: 90px;
             -webkit-font-smoothing: antialiased;
         }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .header {
             background: #17212b;
             color: #f5f5f5; padding: 22px 16px 0;
@@ -42,12 +45,14 @@
         .nav-btn.active .nav-count { background: rgba(106,178,242,0.2); color: #6ab2f2; }
         .container { max-width: 800px; margin: 0 auto; padding: 14px; }
         .page { display: none; }
-        .page.active { display: block; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-out; }
         .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
         .stat-card {
             background: #17212b; border-radius: 16px; padding: 16px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.2); border: 1px solid #232e3c;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+        .stat-card:active { transform: scale(0.97); }
         .stat-card .label { font-size: 10px; color: #6d7f8e; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; }
         .stat-card .value { font-size: 28px; font-weight: 700; color: #6ab2f2; margin-top: 4px; }
         .stat-card.overdue .value { color: #e05555; }
@@ -78,9 +83,9 @@
         .search-box {
             flex: 1; padding: 12px 16px; border: 2px solid #232e3c; border-radius: 14px;
             font-size: 14px; font-family: 'Lora', Georgia, serif; outline: none;
-            background: #17212b; color: #f5f5f5;
+            background: #17212b; color: #f5f5f5; transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .search-box:focus { border-color: #6ab2f2; }
+        .search-box:focus { border-color: #6ab2f2; box-shadow: 0 0 0 3px rgba(106,178,242,0.1); }
         .search-box::placeholder { color: #6d7f8e; }
         .filter-select {
             padding: 12px 14px; border: 2px solid #232e3c; border-radius: 14px;
@@ -91,8 +96,9 @@
         .task-card {
             background: #17212b; border-radius: 18px; padding: 18px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.2); border: 1px solid #232e3c;
-            transition: all 0.3s;
+            transition: all 0.3s ease; animation: fadeInUp 0.35s ease-out both;
         }
+        .task-card:active { transform: scale(0.985); }
         .task-card.overdue { border-left: 4px solid #e05555; background: #1a1519; }
         .task-card.completed { border-left: 4px solid #4fae4e; background: #141d17; }
         .task-card.priority-high-card { border-top: 3px solid #e05555; }
@@ -124,9 +130,14 @@
             margin-bottom: 14px; border: 1px solid #232e3c;
         }
         .task-notes-label { font-size: 10px; color: #6d7f8e; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .task-notes-text { font-size: 13px; color: #a8b8c8; line-height: 1.6; }
-        .task-notes-text ul, .task-notes-text ol { padding-left: 20px; margin: 4px 0; }
-        .task-notes-text li { margin-bottom: 2px; }
+        .task-notes-text { font-size: 13px; color: #a8b8c8; line-height: 1.7; }
+        .task-notes-text p { margin-bottom: 6px; }
+        .task-notes-text ul, .task-notes-text ol { padding-left: 20px; margin: 6px 0; }
+        .task-notes-text li { margin-bottom: 3px; }
+        .task-notes-text blockquote { border-left: 3px solid #6ab2f2; padding: 6px 12px; margin: 8px 0; background: rgba(106,178,242,0.06); border-radius: 0 8px 8px 0; font-style: italic; }
+        .task-notes-text h3 { font-size: 16px; margin: 10px 0 4px; color: #f5f5f5; }
+        .task-notes-text h4 { font-size: 14px; margin: 8px 0 4px; color: #d0d8e0; }
+        .task-notes-text hr { border: none; border-top: 1px solid #2b3a4c; margin: 10px 0; }
         .task-actions { display: flex; gap: 6px; flex-wrap: wrap; }
         .task-actions .btn { flex: 1; padding: 10px 10px; font-size: 12px; text-align: center; min-width: 0; }
         .overdue-date { color: #e05555; font-weight: 700; }
@@ -138,9 +149,9 @@
         .project-card, .note-card {
             background: #17212b; border-radius: 18px; padding: 18px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.2); border: 1px solid #232e3c;
-            cursor: pointer;
+            cursor: pointer; transition: all 0.25s ease; animation: fadeInUp 0.35s ease-out both;
         }
-        .project-card:active, .note-card:active { background: #1e2c3a; }
+        .project-card:active, .note-card:active { background: #1e2c3a; transform: scale(0.98); }
         .project-card-header { display: flex; justify-content: space-between; align-items: center; }
         .project-name { font-size: 16px; font-weight: 700; color: #f5f5f5; }
         .project-count { font-size: 11px; color: #6d7f8e; background: #232e3c; padding: 3px 10px; border-radius: 12px; }
@@ -162,19 +173,11 @@
             width: 100%; padding: 14px 0; border: none; border-bottom: 2px solid #232e3c;
             font-size: 20px; font-weight: 700; font-family: 'Lora', Georgia, serif;
             outline: none; background: transparent; color: #f5f5f5; margin-bottom: 12px;
+            transition: border-color 0.3s ease;
         }
         .note-title-input:focus { border-color: #6ab2f2; }
         .note-title-input::placeholder { color: #6d7f8e; }
-        .note-body-editor {
-            border: 2px solid #232e3c; border-top: none; border-radius: 0 0 14px 14px;
-            padding: 14px; min-height: 300px; font-size: 15px; font-family: 'Lora', Georgia, serif;
-            color: #f5f5f5; line-height: 1.7; background: #17212b; outline: none;
-        }
-        .note-body-editor:focus { border-color: #6ab2f2; }
-        .note-body-editor:empty:before { content: attr(data-placeholder); color: #6d7f8e; font-style: italic; }
-        .note-body-editor ul, .note-body-editor ol { padding-left: 22px; margin: 6px 0; }
-        .note-body-editor li { margin-bottom: 3px; }
-        .note-body-editor h3 { font-size: 18px; margin: 10px 0 6px; }
+        .note-body-editor { min-height: 300px; font-size: 15px; }
         .note-editor-actions { display: flex; gap: 8px; margin-bottom: 14px; }
         .note-editor-actions .btn { font-size: 13px; padding: 10px 18px; }
         .completed-toggle {
@@ -216,32 +219,55 @@
         .form-group input, .form-group textarea, .form-group select {
             width: 100%; padding: 13px 14px; border: 2px solid #232e3c; border-radius: 14px;
             font-size: 14px; font-family: 'Lora', Georgia, serif; outline: none;
-            background: #0e1621; color: #f5f5f5;
+            background: #0e1621; color: #f5f5f5; transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #6ab2f2; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #6ab2f2; box-shadow: 0 0 0 3px rgba(106,178,242,0.1); }
         .form-group textarea { resize: none; min-height: 60px; overflow: hidden; }
         .form-group input::placeholder, .form-group textarea::placeholder { color: #6d7f8e; }
         .form-group select option { background: #17212b; color: #f5f5f5; }
         .editor-toolbar {
             display: flex; gap: 2px; padding: 6px 8px; background: #1e2c3a; border: 2px solid #232e3c;
-            border-bottom: none; border-radius: 14px 14px 0 0; flex-wrap: wrap;
+            border-bottom: none; border-radius: 14px 14px 0 0; flex-wrap: wrap; align-items: center;
         }
         .editor-toolbar button {
             background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 10px;
             font-size: 13px; cursor: pointer; color: #8b9bab; font-family: 'Lora', Georgia, serif;
-            font-weight: 700; transition: all 0.15s; min-width: 34px; text-align: center;
+            font-weight: 700; transition: all 0.2s ease; min-width: 34px; text-align: center;
         }
-        .editor-toolbar button:active { background: #2b3a4c; }
+        .editor-toolbar button:active { background: #2b3a4c; transform: scale(0.92); }
         .editor-toolbar .sep { width: 1px; background: #2b3a4c; margin: 4px 4px; }
-        .editor-area {
-            border: 2px solid #232e3c; border-top: none; border-radius: 0 0 14px 14px;
-            padding: 12px 14px; min-height: 70px; font-size: 14px; font-family: 'Lora', Georgia, serif;
-            color: #f5f5f5; line-height: 1.6; background: #0e1621; outline: none; overflow: hidden;
+        .editor-toolbar select {
+            background: #0e1621; color: #8b9bab; border: 1px solid #2b3a4c; border-radius: 8px;
+            padding: 4px 6px; font-size: 11px; font-family: 'Lora', Georgia, serif; cursor: pointer;
+            outline: none; transition: border-color 0.2s;
         }
-        .editor-area:focus { border-color: #6ab2f2; }
-        .editor-area:empty:before { content: attr(data-placeholder); color: #6d7f8e; font-style: italic; }
-        .editor-area ul, .editor-area ol { padding-left: 22px; margin: 4px 0; }
-        .editor-area li { margin-bottom: 2px; }
+        .editor-toolbar select:focus { border-color: #6ab2f2; }
+        .editor-toolbar select option { background: #17212b; color: #f5f5f5; }
+        .editor-toolbar .color-input {
+            width: 28px; height: 28px; border: 2px solid #2b3a4c; border-radius: 8px;
+            cursor: pointer; background: none; padding: 0;
+        }
+        .editor-area, .note-body-editor {
+            border: 2px solid #232e3c; border-top: none; border-radius: 0 0 14px 14px;
+            padding: 14px 16px; min-height: 70px; font-size: 14px; font-family: 'Lora', Georgia, serif;
+            color: #f5f5f5; line-height: 1.8; background: #0e1621; outline: none; overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+        .editor-area:focus, .note-body-editor:focus { border-color: #6ab2f2; }
+        .editor-area:empty:before, .note-body-editor:empty:before { content: attr(data-placeholder); color: #6d7f8e; font-style: italic; }
+        .editor-area ul, .editor-area ol, .note-body-editor ul, .note-body-editor ol { padding-left: 24px; margin: 8px 0; }
+        .editor-area li, .note-body-editor li { margin-bottom: 4px; line-height: 1.7; }
+        .editor-area h3, .note-body-editor h3 { font-size: 20px; margin: 16px 0 8px; color: #f5f5f5; }
+        .editor-area h4, .note-body-editor h4 { font-size: 17px; margin: 12px 0 6px; color: #d0d8e0; }
+        .editor-area blockquote, .note-body-editor blockquote {
+            border-left: 3px solid #6ab2f2; padding: 8px 14px; margin: 10px 0;
+            background: rgba(106,178,242,0.06); border-radius: 0 8px 8px 0; color: #a8b8c8;
+            font-style: italic;
+        }
+        .editor-area hr, .note-body-editor hr {
+            border: none; border-top: 1px solid #2b3a4c; margin: 16px 0;
+        }
+        .editor-area p, .note-body-editor p { margin-bottom: 8px; }
         .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
         .modal-actions .btn { flex: 1; padding: 14px; font-size: 15px; }
         .fab {
@@ -251,8 +277,9 @@
             color: #f5f5f5; border: none; font-size: 30px; font-weight: 300;
             box-shadow: 0 4px 16px rgba(0,0,0,0.4); cursor: pointer; z-index: 50;
             display: flex; align-items: center; justify-content: center;
+            transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
         }
-        .fab:active { transform: scale(0.9); background: #3a6a94; }
+        .fab:active { transform: scale(0.85) rotate(90deg); background: #3a6a94; }
         @media (min-width: 600px) {
             .container { padding: 22px; }
             .modal { border-radius: 22px; margin: auto; max-width: 520px; }
@@ -320,21 +347,46 @@
                 </div>
                 <input type="text" class="note-title-input" id="noteTitle" placeholder="Заголовок заметки...">
                 <div class="editor-toolbar" id="noteEditorToolbar">
-                    <button type="button" onclick="noteCmd('bold')"><b>Ж</b></button>
-                    <button type="button" onclick="noteCmd('italic')"><i>К</i></button>
-                    <button type="button" onclick="noteCmd('underline')"><u>П</u></button>
+                    <select onchange="nCmd('fontName',this.value);this.value=''">
+                        <option value="">Шрифт</option>
+                        <option value="Lora" style="font-family:Lora">Lora</option>
+                        <option value="Inter" style="font-family:Inter">Inter</option>
+                        <option value="PT Serif" style="font-family:'PT Serif'">PT Serif</option>
+                        <option value="Roboto Mono" style="font-family:'Roboto Mono'">Mono</option>
+                        <option value="Georgia">Georgia</option>
+                    </select>
+                    <select onchange="nCmd('fontSize',this.value);this.value=''">
+                        <option value="">Размер</option>
+                        <option value="1">10</option>
+                        <option value="2">12</option>
+                        <option value="3">14</option>
+                        <option value="4">16</option>
+                        <option value="5">18</option>
+                        <option value="6">22</option>
+                        <option value="7">28</option>
+                    </select>
                     <div class="sep"></div>
-                    <button type="button" onclick="noteCmd('insertUnorderedList')">&#8226;</button>
-                    <button type="button" onclick="noteCmd('insertOrderedList')">1.</button>
+                    <button type="button" onclick="nCmd('bold')"><b>Ж</b></button>
+                    <button type="button" onclick="nCmd('italic')"><i>К</i></button>
+                    <button type="button" onclick="nCmd('underline')"><u>П</u></button>
+                    <button type="button" onclick="nCmd('strikeThrough')"><s>S</s></button>
                     <div class="sep"></div>
-                    <button type="button" onclick="noteCmd('formatBlock','H3')">H</button>
-                    <button type="button" onclick="noteFontSize(2)" style="font-size:11px">A</button>
-                    <button type="button" onclick="noteFontSize(4)" style="font-size:14px">A</button>
-                    <button type="button" onclick="noteFontSize(6)" style="font-size:18px">A</button>
+                    <button type="button" onclick="nCmd('insertUnorderedList')">&#8226;</button>
+                    <button type="button" onclick="nCmd('insertOrderedList')">1.</button>
+                    <button type="button" onclick="nCmd('indent')" title="Отступ">&#8677;</button>
+                    <button type="button" onclick="nCmd('outdent')" title="Убрать отступ">&#8676;</button>
                     <div class="sep"></div>
-                    <button type="button" onclick="noteCmd('strikeThrough')"><s>S</s></button>
-                    <button type="button" onclick="noteCmd('justifyLeft')">&#8676;</button>
-                    <button type="button" onclick="noteCmd('justifyCenter')">&#8596;</button>
+                    <button type="button" onclick="nCmd('formatBlock','H3')">H3</button>
+                    <button type="button" onclick="nCmd('formatBlock','H4')">H4</button>
+                    <button type="button" onclick="nCmd('formatBlock','BLOCKQUOTE')" title="Цитата">&#10077;</button>
+                    <button type="button" onclick="nCmd('insertHorizontalRule')" title="Разделитель">&#8213;</button>
+                    <div class="sep"></div>
+                    <button type="button" onclick="nCmd('justifyLeft')">&#8676;</button>
+                    <button type="button" onclick="nCmd('justifyCenter')">&#8596;</button>
+                    <button type="button" onclick="nCmd('justifyRight')">&#8677;</button>
+                    <div class="sep"></div>
+                    <input type="color" class="color-input" value="#f5f5f5" onchange="nCmd('foreColor',this.value)" title="Цвет текста">
+                    <button type="button" onclick="nCmd('removeFormat')" title="Очистить формат">&#10005;</button>
                 </div>
                 <div class="note-body-editor" id="noteBody" contenteditable="true" data-placeholder="Начните писать..."></div>
             </div>
@@ -366,16 +418,46 @@
                 <div class="form-group">
                     <label>Заметки</label>
                     <div class="editor-toolbar">
-                        <button type="button" onclick="execCmd('bold')"><b>Ж</b></button>
-                        <button type="button" onclick="execCmd('italic')"><i>К</i></button>
-                        <button type="button" onclick="execCmd('underline')"><u>П</u></button>
+                        <select onchange="edCmd('fontName',this.value);this.value=''">
+                            <option value="">Шрифт</option>
+                            <option value="Lora" style="font-family:Lora">Lora</option>
+                            <option value="Inter" style="font-family:Inter">Inter</option>
+                            <option value="PT Serif" style="font-family:'PT Serif'">PT Serif</option>
+                            <option value="Roboto Mono" style="font-family:'Roboto Mono'">Mono</option>
+                            <option value="Georgia">Georgia</option>
+                        </select>
+                        <select onchange="edCmd('fontSize',this.value);this.value=''">
+                            <option value="">Размер</option>
+                            <option value="1">10</option>
+                            <option value="2">12</option>
+                            <option value="3">14</option>
+                            <option value="4">16</option>
+                            <option value="5">18</option>
+                            <option value="6">22</option>
+                            <option value="7">28</option>
+                        </select>
                         <div class="sep"></div>
-                        <button type="button" onclick="execCmd('insertUnorderedList')">&#8226;</button>
-                        <button type="button" onclick="execCmd('insertOrderedList')">1.</button>
+                        <button type="button" onclick="edCmd('bold')"><b>Ж</b></button>
+                        <button type="button" onclick="edCmd('italic')"><i>К</i></button>
+                        <button type="button" onclick="edCmd('underline')"><u>П</u></button>
+                        <button type="button" onclick="edCmd('strikeThrough')"><s>S</s></button>
                         <div class="sep"></div>
-                        <button type="button" onclick="setFontSize(2)" style="font-size:11px">A</button>
-                        <button type="button" onclick="setFontSize(4)" style="font-size:14px">A</button>
-                        <button type="button" onclick="setFontSize(6)" style="font-size:18px">A</button>
+                        <button type="button" onclick="edCmd('insertUnorderedList')">&#8226;</button>
+                        <button type="button" onclick="edCmd('insertOrderedList')">1.</button>
+                        <button type="button" onclick="edCmd('indent')" title="Отступ">&#8677;</button>
+                        <button type="button" onclick="edCmd('outdent')" title="Убрать отступ">&#8676;</button>
+                        <div class="sep"></div>
+                        <button type="button" onclick="edCmd('formatBlock','H3')">H3</button>
+                        <button type="button" onclick="edCmd('formatBlock','H4')">H4</button>
+                        <button type="button" onclick="edCmd('formatBlock','BLOCKQUOTE')" title="Цитата">&#10077;</button>
+                        <button type="button" onclick="edCmd('insertHorizontalRule')" title="Разделитель">&#8213;</button>
+                        <div class="sep"></div>
+                        <button type="button" onclick="edCmd('justifyLeft')">&#8676;</button>
+                        <button type="button" onclick="edCmd('justifyCenter')">&#8596;</button>
+                        <button type="button" onclick="edCmd('justifyRight')">&#8677;</button>
+                        <div class="sep"></div>
+                        <input type="color" class="color-input" value="#f5f5f5" onchange="edCmd('foreColor',this.value)" title="Цвет текста">
+                        <button type="button" onclick="edCmd('removeFormat')" title="Очистить формат">&#10005;</button>
                     </div>
                     <div class="editor-area" id="notesEditor" contenteditable="true" data-placeholder="Ваши заметки..."></div>
                 </div>
@@ -453,7 +535,7 @@ function stLabel(s) { return{'new':'Новая','in-progress':'В работе',
 function isOverdue(t) { return t.status!=='completed'&&t.responseDate&&new Date(t.responseDate)<new Date(new Date().toISOString().split('T')[0]); }
 function esc(t) { const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
-const ALLOWED_TAGS = ['B','I','U','UL','OL','LI','BR','FONT','SPAN','P','DIV','STRONG','EM','S','H3','H4'];
+const ALLOWED_TAGS = ['B','I','U','UL','OL','LI','BR','FONT','SPAN','P','DIV','STRONG','EM','S','H2','H3','H4','BLOCKQUOTE','HR','SUB','SUP'];
 function sanitizeHtml(html) {
     if (!html) return '';
     const tmp = document.createElement('div');
@@ -470,8 +552,12 @@ function sanitizeHtml(html) {
                     if (a.name.startsWith('on') || a.value.trim().toLowerCase().startsWith('javascript:'))
                         child.removeAttribute(a.name);
                 });
+                if (child.hasAttribute('style')) {
+                    const safe = child.style.cssText.replace(/expression|url|import|behavior/gi, '');
+                    child.setAttribute('style', safe);
+                }
                 if (child.tagName === 'FONT') {
-                    const ok = ['size','color'];
+                    const ok = ['size','color','face'];
                     Array.from(child.attributes).forEach(a => { if (!ok.includes(a.name)) child.removeAttribute(a.name); });
                 }
                 clean(child);
@@ -511,10 +597,8 @@ function sanitizeNote(n) {
     };
 }
 
-function execCmd(cmd) { document.execCommand(cmd, false, null); document.getElementById('notesEditor').focus(); }
-function setFontSize(size) { document.execCommand('fontSize', false, size); document.getElementById('notesEditor').focus(); }
-function noteCmd(cmd, val) { document.execCommand(cmd, false, val||null); document.getElementById('noteBody').focus(); }
-function noteFontSize(size) { document.execCommand('fontSize', false, size); document.getElementById('noteBody').focus(); }
+function edCmd(cmd, val) { document.execCommand(cmd, false, val||null); document.getElementById('notesEditor').focus(); }
+function nCmd(cmd, val) { document.execCommand(cmd, false, val||null); document.getElementById('noteBody').focus(); }
 function autoGrow(el) { el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
 
 function navigate(p) {
