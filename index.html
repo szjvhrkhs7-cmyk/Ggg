@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; img-src data: blob:;">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, minimum-scale=0.9, maximum-scale=0.9, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Задачи">
@@ -84,14 +84,14 @@
         .btn-backup { background: rgba(79,174,78,0.12); color: #4fae4e; border: 1px solid rgba(79,174,78,0.25); }
         .btn-restore { background: rgba(224,163,54,0.12); color: #e0a336; border: 1px solid rgba(224,163,54,0.25); }
         .search-box {
-            flex: 1; padding: 10px 14px; border: 2px solid #232e3c; border-radius: 12px;
+            flex: 1; padding: 8px 12px; border: 1px solid #232e3c; border-radius: 10px;
             font-size: 16px; font-family: 'Lora', Georgia, serif; outline: none;
             background: #17212b; color: #f5f5f5; transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .search-box:focus { border-color: #6ab2f2; box-shadow: 0 0 0 3px rgba(106,178,242,0.1); }
         .search-box::placeholder { color: #6d7f8e; }
         .filter-select {
-            padding: 10px 12px; border: 2px solid #232e3c; border-radius: 12px;
+            padding: 8px 10px; border: 1px solid #232e3c; border-radius: 10px;
             font-size: 16px; font-family: 'Lora', Georgia, serif; outline: none;
             background: #17212b; color: #f5f5f5; cursor: pointer; flex: 1;
         }
@@ -210,23 +210,23 @@
         }
         .modal-overlay.active { display: flex; }
         .modal {
-            background: #17212b; border-radius: 20px 20px 0 0;
-            padding: 16px 14px calc(28px + env(safe-area-inset-bottom)); width: 100%; max-width: 560px;
-            max-height: 92vh; overflow-y: auto;
+            background: #17212b; border-radius: 18px 18px 0 0;
+            padding: 12px 12px calc(20px + env(safe-area-inset-bottom)); width: 100%; max-width: 560px;
+            max-height: 94vh; overflow-y: auto;
             box-shadow: 0 -8px 32px rgba(0,0,0,0.4); animation: slideUp 0.3s ease-out;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-handle { width: 36px; height: 4px; background: #2b3a4c; border-radius: 3px; margin: 0 auto 14px; }
-        .modal h2 { font-size: 17px; margin-bottom: 16px; color: #f5f5f5; font-weight: 700; }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 700; color: #6d7f8e; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .modal-handle { width: 32px; height: 4px; background: #2b3a4c; border-radius: 3px; margin: 0 auto 10px; }
+        .modal h2 { font-size: 16px; margin-bottom: 12px; color: #f5f5f5; font-weight: 700; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 10px; font-weight: 700; color: #6d7f8e; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.4px; }
         .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 11px 12px; border: 2px solid #232e3c; border-radius: 12px;
+            width: 100%; padding: 8px 10px; border: 1px solid #232e3c; border-radius: 10px;
             font-size: 16px; font-family: 'Lora', Georgia, serif; outline: none;
             background: #0e1621; color: #f5f5f5; transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #6ab2f2; box-shadow: 0 0 0 3px rgba(106,178,242,0.1); }
-        .form-group textarea { resize: none; min-height: 60px; overflow: hidden; }
+        .form-group textarea { resize: none; min-height: 44px; overflow: hidden; }
         .form-group input::placeholder, .form-group textarea::placeholder { color: #6d7f8e; }
         .form-group select option { background: #17212b; color: #f5f5f5; }
         .editor-toolbar {
@@ -242,8 +242,9 @@
         .editor-toolbar button:active { background: #2b3a4c; transform: scale(0.92); }
         .editor-toolbar .sep { width: 1px; background: #2b3a4c; margin: 4px 4px; }
         .editor-toolbar select {
-            background: #0e1621; color: #8b9bab; border: 1px solid #2b3a4c; border-radius: 8px;
-            padding: 4px 6px; font-size: 16px; font-family: 'Lora', Georgia, serif; cursor: pointer;
+            background: #0e1621; color: #8b9bab; border: 1px solid #2b3a4c; border-radius: 6px;
+            padding: 3px 4px; font-size: 16px; font-family: 'Lora', Georgia, serif; cursor: pointer;
+            max-width: 80px;
             outline: none; transition: border-color 0.2s;
         }
         .editor-toolbar select:focus { border-color: #6ab2f2; }
@@ -273,8 +274,8 @@
             border: none; border-top: 1px solid #2b3a4c; margin: 16px 0;
         }
         .editor-area p, .note-body-editor p { margin-bottom: 8px; }
-        .modal-actions { display: flex; gap: 8px; margin-top: 18px; }
-        .modal-actions .btn { flex: 1; padding: 12px; font-size: 14px; }
+        .modal-actions { display: flex; gap: 6px; margin-top: 14px; }
+        .modal-actions .btn { flex: 1; padding: 10px; font-size: 13px; }
         .fab {
             position: fixed; bottom: calc(18px + env(safe-area-inset-bottom)); right: 18px; width: 52px; height: 52px;
             border-radius: 50%;
@@ -499,7 +500,7 @@
             <h2>Уведомление в календарь</h2>
             <input type="hidden" id="calTaskId">
             <input type="hidden" id="calProjectId">
-            <div id="calTaskInfo" style="font-size:13px;color:#a8b8c8;margin-bottom:18px;padding:12px 14px;background:#0e1621;border-radius:12px;border:1px solid #232e3c;line-height:1.5"></div>
+            <div id="calTaskInfo" style="font-size:12px;color:#a8b8c8;margin-bottom:12px;padding:8px 10px;background:#0e1621;border-radius:10px;border:1px solid #232e3c;line-height:1.4"></div>
             <div class="form-group"><label>Дата уведомления *</label><input type="date" id="calDate" required></div>
             <div class="form-group"><label>Время уведомления *</label><input type="time" id="calTime" required></div>
             <div class="modal-actions">
@@ -1022,6 +1023,22 @@ function exportCSV() {
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('taskModal');closeModal('projectModal');closeModal('calendarModal');}});
+
+// Prevent iOS standalone mode zoom
+(function(){
+    const vpContent='width=device-width,initial-scale=0.9,minimum-scale=0.9,maximum-scale=0.9,user-scalable=no,viewport-fit=cover';
+    const vp=document.querySelector('meta[name=viewport]');
+    function resetVP(){if(vp)vp.setAttribute('content',vpContent);}
+    document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault();},{passive:false});
+    let lte=0;
+    document.addEventListener('touchend',function(e){const n=Date.now();if(n-lte<=300)e.preventDefault();lte=n;},false);
+    document.addEventListener('focusin',function(e){
+        if(e.target.matches('input,textarea,select')){setTimeout(resetVP,100);}
+    });
+    document.addEventListener('focusout',function(){setTimeout(resetVP,100);});
+    document.addEventListener('gesturestart',function(e){e.preventDefault();},{passive:false});
+})();
+
 renderTasks(); updateBackupInfo();
 </script>
 </body>
