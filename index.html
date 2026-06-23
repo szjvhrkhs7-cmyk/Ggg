@@ -198,23 +198,25 @@
         }
         @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
         .modal-handle{width:32px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 12px}
-        .modal h2{font-size:16px;font-weight:700;margin-bottom:14px;color:var(--text)}
-        .form-group{margin-bottom:12px}
+        .modal h2{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--text)}
+        .form-group{margin-bottom:14px}
         .form-group label{
             display:block;font-size:11px;font-weight:600;color:var(--sec);
-            margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px;
+            margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px;
         }
         .form-group input,.form-group textarea,.form-group select{
-            width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);
+            width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);
             font-size:16px;font-family:var(--font);outline:none;
             background:var(--bg);color:var(--text);transition:border-color .2s;
         }
         .form-group input:focus,.form-group textarea:focus,.form-group select:focus{
             border-color:var(--blue);box-shadow:0 0 0 2px rgba(35,131,226,.12);
         }
-        .form-group textarea{resize:none;min-height:44px;overflow:hidden}
+        .form-group textarea{resize:none;min-height:48px;overflow:hidden}
         .form-group input::placeholder,.form-group textarea::placeholder{color:var(--light)}
         .form-group select option{background:var(--bg);color:var(--text)}
+        .form-row{display:flex;gap:10px}
+        .form-row .form-group{flex:1;margin-bottom:14px}
         .editor-toolbar{
             display:flex;gap:4px;padding:6px 8px;background:var(--bg2);
             border:1px solid var(--border);border-bottom:none;
@@ -229,7 +231,7 @@
         .editor-area,.note-body-editor{
             border:1px solid var(--border);border-top:none;
             border-radius:0 0 var(--radius) var(--radius);
-            padding:10px 12px;min-height:50px;font-size:15px;font-family:var(--font);
+            padding:10px 12px;min-height:80px;font-size:15px;font-family:var(--font);
             color:var(--text);line-height:1.6;background:var(--bg);outline:none;
         }
         .editor-area:focus,.note-body-editor:focus{border-color:var(--blue)}
@@ -334,18 +336,22 @@
             <form id="taskForm" onsubmit="saveTask(event)">
                 <input type="hidden" id="taskId">
                 <input type="hidden" id="taskProjectId" value="">
-                <div class="form-group"><label>Дата поступления *</label><input type="date" id="dateReceived" required></div>
+                <input type="hidden" id="dateReceived">
                 <div class="form-group"><label>Краткая суть задачи *</label><textarea id="summary" placeholder="Опишите суть задачи..." required oninput="autoGrow(this)"></textarea></div>
                 <div class="form-group"><label>Что требуется дополнительно</label><textarea id="additionalInfo" placeholder="Документы, сведения..." oninput="autoGrow(this)"></textarea></div>
-                <div class="form-group"><label>Дата ответа</label><input type="date" id="responseDate"></div>
-                <div class="form-group"><label>Напоминание</label>
-                    <select id="reminderDays"><option value="0">В день ответа</option><option value="1" selected>За 1 день</option><option value="2">За 2 дня</option><option value="3">За 3 дня</option><option value="7">За неделю</option></select>
+                <div class="form-row">
+                    <div class="form-group"><label>Дата ответа</label><input type="date" id="responseDate"></div>
+                    <div class="form-group"><label>Напоминание</label>
+                        <select id="reminderDays"><option value="0">В день ответа</option><option value="1" selected>За 1 день</option><option value="2">За 2 дня</option><option value="3">За 3 дня</option><option value="7">За неделю</option></select>
+                    </div>
                 </div>
-                <div class="form-group"><label>Значимость</label>
-                    <select id="priority"><option value="none">Обычная</option><option value="low">Низкая</option><option value="medium">Средняя</option><option value="high">Высокая</option></select>
-                </div>
-                <div class="form-group"><label>Статус</label>
-                    <select id="status"><option value="new">Новая</option><option value="in-progress">В работе</option><option value="waiting">Ожидание</option><option value="completed">Завершена</option></select>
+                <div class="form-row">
+                    <div class="form-group"><label>Значимость</label>
+                        <select id="priority"><option value="none">Обычная</option><option value="low">Низкая</option><option value="medium">Средняя</option><option value="high">Высокая</option></select>
+                    </div>
+                    <div class="form-group"><label>Статус</label>
+                        <select id="status"><option value="new">Новая</option><option value="in-progress">В работе</option><option value="waiting">Ожидание</option><option value="completed">Завершена</option></select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Заметки</label>
@@ -567,7 +573,7 @@ function openTaskModal(pid){
     document.getElementById('taskForm').reset();
     document.getElementById('taskId').value='';
     document.getElementById('taskProjectId').value=pid||'';
-    document.getElementById('dateReceived').value=new Date().toISOString().split('T')[0];
+    document.getElementById('dateReceived').value='';
     document.getElementById('notesEditor').innerHTML='';
     document.querySelectorAll('#taskForm textarea').forEach(function(t){t.style.height='auto'});
     document.getElementById('taskModal').classList.add('active');
@@ -594,8 +600,9 @@ function saveTask(e){
     var pid=document.getElementById('taskProjectId').value||null;
     var list=getList(pid);
     var ns=document.getElementById('status').value;
+    var drVal=document.getElementById('dateReceived').value;
     var d={
-        dateReceived:document.getElementById('dateReceived').value,
+        dateReceived:drVal||new Date().toISOString().split('T')[0],
         summary:document.getElementById('summary').value.trim(),
         additionalInfo:document.getElementById('additionalInfo').value.trim(),
         responseDate:document.getElementById('responseDate').value,
